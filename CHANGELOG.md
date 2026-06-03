@@ -18,6 +18,28 @@ Dit bestand is het tegenhanger-artefact van `BLUEPRINT.html`:
 
 ---
 
+## v1.8 — 2026-06-03 · F8 (resultatenmatrix) onder test
+
+De slaag/zak-logica en de cijferberekening komen samen in de resultatenmatrix; dit is de plek waar de
+PROMEF-exameneis ("alle criteria minimaal Op") zichtbaar wordt voor de docent.
+
+### Verbeteringen
+
+- **F8 — ResultsView** (`tests/component/ResultsView.test.tsx`): één "Onder" (1) levert "Gezakt" op
+  ondanks een slagend cijfer (de criteria-eis weegt zwaarder dan het puntentotaal); onvolledig →
+  "Deels"/"Onvolledig"; volledig zonder 1 → "Geslaagd"; en de CSV-export bouwt een rij met naam, zes
+  scores, totaal, cijfer en statuslabel.
+
+### Lessen
+
+- De CSV-export gaat via `downloadCSV` (DOM-`<a>` + `URL.createObjectURL`), lastig direct te testen.
+  Door alléén die ene functie te mocken bleef de rest van `utils` echt en kon het `rows`-argument
+  geïnspecteerd worden.
+  → Geleerde conventie: mock één named export met
+  `vi.mock(pad, async (importOriginal) => ({ ...await importOriginal(), naam: vi.fn() }))`.
+
+---
+
 ## v1.7 — 2026-06-03 · F7 (backend & Gemini-audioanalyse) onder test
 
 De backend-kern was al in F0 getest (de server-split werd daar bewezen). F7 vult de twee resterende

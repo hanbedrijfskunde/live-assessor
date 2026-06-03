@@ -72,9 +72,9 @@
 <header class="title">
   <div>
     <span class="tag">BLAUWDRUK</span>
-    <span class="tag">v1.7</span>
+    <span class="tag">v1.8</span>
     <span class="tag">build-ready</span>
-    <span class="tag" style="background:#ecfdf5;color:#047857">F0–F7 gerealiseerd</span>
+    <span class="tag" style="background:#ecfdf5;color:#047857">F0–F8 gerealiseerd</span>
   </div>
   <h1>PROMEF Assessment Tool &amp; AI Notulist</h1>
   <p><strong>Doel van dit document:</strong> een complete, op zichzelf staande bouwspecificatie. Een software engineer
@@ -641,6 +641,7 @@ herstarten. Er is geen UI-veld voor de sleutel; hij hoort uitsluitend server-sid
   <li>Geen echte persoonsnamen (studenten of docenten) in de broncode of testfixtures. De demo-roster leeft in <code>public/demo.csv</code> en wordt via <code>parseCSV</code> geladen; defaults voor <code>assessoren</code> zijn leeg; AI-fallback-scenario's gebruiken <code>Student 1</code>/<code>Student 2</code>. Een verse app start leeg.</li>
   <li>Timer-gestuurde UI (de <code>setInterval</code>-playback van de simulatie): test met <code>vi.useFakeTimers()</code> + <code>act(() =&gt; vi.advanceTimersByTime(...))</code>; gebruik <code>fireEvent</code> (niet <code>userEvent</code>) zolang nep-timers actief zijn.</li>
   <li>Een verborgen file-input (<code>display:none</code>) weigert <code>userEvent.upload</code>: zet <code>files</code> via <code>Object.defineProperty</code> en dispatch <code>fireEvent.change</code>. Mock <code>fetch</code> voor het upload→API-pad.</li>
+  <li>Eén named export mocken zonder de rest te verliezen: <code>vi.mock(pad, async (importOriginal) =&gt; ({ ...await importOriginal(), naam: vi.fn() }))</code> — bv. <code>downloadCSV</code> mocken om het <code>rows</code>-argument te inspecteren.</li>
 </ul></div>
 
 <!-- GITFLOW -->
@@ -984,7 +985,8 @@ voor welke fasen/tracks veilig gelijktijdig kunnen en welke gedeelde bestanden j
 
 <!-- F8 -->
 <div class="card phase" id="f8">
-<h3>F8 · Resultatenmatrix (ResultsView)</h3>
+<h3>F8 · Resultatenmatrix (ResultsView) <span class="pill" style="background:#ecfdf5;color:#047857">✅ GEREALISEERD</span></h3>
+<p class="small"><strong>Testnotitie:</strong> component-tests (<code>tests/component/ResultsView.test.tsx</code>): één "Onder" (1) → "Gezakt" ondanks slagend cijfer, onvolledig → "Deels"/"Onvolledig", volledig zonder 1 → "Geslaagd", en CSV-export (rij = naam, 6 scores, totaal, cijfer, statuslabel). De CSV-test mockt alléén <code>downloadCSV</code> via <code>vi.mock(..., importOriginal)</code> en inspecteert het <code>rows</code>-argument.</p>
 <p><strong>Doel:</strong> overzicht met punten, cijfer, slaag/zak + CSV-export.</p>
 <h4>Subtaken</h4>
 <ul class="checks">
