@@ -1,0 +1,21 @@
+# Gespreksscript: assessment Leon
+# Wijs bovenaan elke spreker een stem toe met @voice, schrijf daaronder de dialoog.
+# Aanhalingstekens en koppeltekens mag je gewoon gebruiken; die worden bij het
+# genereren automatisch opgeschoond voor een vloeiende uitspraak.
+
+@voice Docent = nl-NL-Chirp3-HD-Vindemiatrix
+@voice Leon   = nl-NL-Chirp3-HD-Fenrir
+
+Docent: Goedemorgen. Klaar voor het assessment?
+Leon: Jazeker, ik heb er wel vertrouwen in. Ik denk dat ik de stof goed beheers.
+Docent: Mooi. Laten we beginnen met het theoretische deel. Kun je me uitleggen hoe je een theoretisch concept uit de 'verander-fase' zou toepassen? Bijvoorbeeld gerelateerd aan de gastorganisatie?
+Leon: Nou, ik zou kijken naar het veranderingsproces en dan een model als dat van Lewin gebruiken: 'unfreeze', 'change', 'refreeze'. Zodat de verandering ook echt beklijft. In de gastorganisatie bijvoorbeeld bij de implementatie van dat nieuwe softwaresysteem.
+Docent: Interessant. En hoe zou je dan omgaan met medewerkers die daar moeite mee hadden?
+Leon: Weerstand zie ik als een signaal, niet als een probleem. Het is belangrijk om te begrijpen wat de oorzaak is. Is het angst, gebrek aan informatie? Door goed te luisteren en de dialoog aan te gaan, kun je die weerstand vaak omzetten in begrip en zelfs betrokkenheid. Ik had bijvoorbeeld een gesprek met een teamleider die bang was voor tijdsverlies, en door duidelijke afspraken te maken over de training, konden we die angst wegnemen.
+Docent: Dat toont goed inzicht. En als we kijken naar intercultural issues, heb je daar voorbeelden van, misschien uit je STRAOR of INTEBB opdrachten?
+Leon: Ja, in mijn project was het belangrijk om rekening te houden met de verschillende communicatiestijlen binnen het team. Dat zag je ook terug in de beroepsproducten. Wat voor mij direct was, werd door een ander als bot ervaren. Ik heb geleerd om mijn stijl aan te passen, ook in de geschreven documenten.
+Docent: Goed. En wat betreft je eigen ontwikkeling, waar zie je nog groeipotentieel? Je hebt laten zien dat je gegroeid bent, maar waar liggen de volgende stappen?
+Leon: Ik wilt me verder ontwikkelen in het leiden van grotere veranderingsprocessen. Ik merk dat ik de theorie beheers, maar die complexiteit van een hele organisatie is nog een uitdaging. Ik wil meer ervaring opdoen met stakeholdermanagement op een breder niveau.
+Docent: Duidelijk. Laten we het tot slot hebben over handelen vanuit waarden. Kun je een morele kwestie beschrijven die je bent tegengekomen en hoe je die hebt geanalyseerd?
+Leon: Jazeker. Er was een situatie waarin een collega vertrouwelijke informatie wilde delen met een andere partij, om een deal te versnellen. Ik heb toen verwezen naar de AVG-regels en uitgelegd dat integriteit voorop staat. Uiteindelijk hebben we een andere manier gevonden om de deal te sluiten, zonder de regels te overtreden.
+Docent: Dat is professioneel gehandeld. Dankjewel voor dit gesprek.

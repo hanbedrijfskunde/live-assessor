@@ -1,0 +1,35 @@
+# Gespreksscript: assessment Dylan
+# Wijs bovenaan elke spreker een stem toe met @voice, schrijf daaronder de dialoog.
+# Aanhalingstekens en koppeltekens mag je gewoon gebruiken; die worden bij het
+# genereren automatisch opgeschoond voor een vloeiende uitspraak.
+
+@voice Docent = nl-NL-Chirp3-HD-Vindemiatrix
+@voice Dylan  = nl-NL-Chirp3-HD-Sadachbia
+
+Docent: Goedemorgen Dylan. Welkom bij je Promef eindassessment voor het F-cluster. Laten we meteen beginnen met het eerste criterium: veranderen en evalueren. Kun jij een theoretisch concept uit de verander- of evaluatiefase uitleggen en vertellen hoe je dit hebt toegepast in je gastorganisatie?
+Dylan: Ja, hallo. Nou ja, veranderen? Dat is natuurlijk altijd wel een dingetje binnen zo een bedrijf. Iedereen vindt er wat van. Wij hebben vooral gekeken naar hoe we de boel een beetje in beweging konden krijgen. Gewoon, stapsgewijs de boel aanpakken en kijken wat werkt.
+Docent: Oké, maar welk specifiek bedrijfskundig theoretisch concept of model heb je daarvoor gebruikt?
+Dylan: Gewoon die basisdingen, weet je wel? Dat je eerst moet kijken wat er aan de hand is, dan ga je het aanpassen en dan moet het zo blijven. Een soort fasemodel. Ik weet de exacte naam van die schrijver even niet meer, maar het komt erop neer dat je niet alles tegelijk moet willen doen. Dat werkt averechts.
+Docent: Je doelt waarschijnlijk op een fasemodel zoals dat van Lewin of Kotter. Maar hoe heb je dat dan concreet toegepast bij het evalueren van de processen in jouw gastorganisatie?
+Dylan: Nou, we hebben aan het eind wel even gezeten met het team van: hoe ging het nou? En toen zeiden de meesten dat het wel oké ging. Dus dat was wel een prima evaluatie. Er waren wel wat dingetjes die beter konden, maar ja dat heb je altijd.
+Docent: Goed, laten we overstappen naar het omgaan met weerstand, het schakelen en verbinden. Hoe heb jij binnen de organisatie aangetoond dat je weerstand kunt omzetten in veranderbereidheid?
+Dylan: Oh, er was echt superveel weerstand. De mensen op de werkvloer hadden er totaal geen zin in. Die dachten echt van: daar heb je weer zo een student met een leuk ideetje.
+Docent: En hoe ben je daar toen mee omgegaan? Hoe heb je die weerstand omgebuigd?
+Dylan: Nou, ik ben gewoon een beetje met ze gaan praten. Je moet ze gewoon een beetje masseren, hè. Koffie drinken, luisteren naar hun geklaag. En op een gegeven moment draaien ze wel bij. Als je maar gewoon aardig blijft en uitlegt dat het moet van de directeur, dan doen ze het uiteindelijk wel. Je moet er niet te zwaar aan tillen, het waait meestal wel weer over.
+Docent: Dus je hebt geen specifieke interventie gepleegd of veranderstrategie ingezet om de veranderbereidheid systematisch te vergroten?
+Dylan: Nou ja, mijn strategie was dus gewoon het gesprek aangaan. Echte theorieën heb ik daar niet achter gezocht, dat voelt in de praktijk ook zo geforceerd. Gewoon logisch nadenken werkt het best, dacht ik.
+Docent: Laten we kijken naar je beroepsproducten voor de Straor en Intebb opdrachten. Welke concrete, professionele bijdrage heb jij geleverd aan het uiteindelijke resultaat voor de gastorganisatie?
+Dylan: Ik heb best wel veel gedaan voor de verslagen. Vooral de lay-out en het nakijken van de spelling enzo. En ik heb ook wel wat teksten geschreven voor de eerste hoofdstukken, over de huidige situatie en hoe de markt er een beetje uitziet. We hebben het echt als team gedaan, dus het is lastig te zeggen wat nou specifiek van mij was. Het was gewoon een goede samenwerking.
+Docent: Maar wat was jouw specifieke inhoudelijke bedrijfskundige inbreng in die producten?
+Dylan: Nou, dat we het probleem goed hebben beschreven. Dat er structuur in zat. Ik heb gezorgd dat de inleiding en de conclusie een beetje lekker liepen. De organisatie was er uiteindelijk wel blij mee, geloof ik. Die vonden het wel een mooi document geworden.
+Docent: In het beoordelingsformulier staat ook dat je een intercultureel issue moet bespreken. Welk issue ben je tegengekomen, wat was het effect, en hoe zou je dat een volgende keer aanpakken?
+Dylan: Ja, dat was wel een dingetje. We hadden te maken met verschillende culturen op de afdeling. Sommige mensen waren heel direct en anderen juist heel erg afwachtend. Dat botste soms wel in de communicatie tijdens de meetings.
+Docent: Kun je dat concreter maken? Wat was het effect daarvan op het project en wat heb jij toen gedaan?
+Dylan: Nou, het effect was dat de vergaderingen soms wat stroef liepen en dat we vertraging opliepen omdat niet iedereen meteen zei wat-ie dacht. Ik heb toen gewoon gezegd dat we allemaal een beetje respect voor elkaar moeten hebben. Volgende keer zou ik denk ik gewoon vooraf duidelijke afspraken maken over hoe we vergaderen. Dan weet iedereen waar-ie aan toe is, ongeacht de achtergrond.
+Docent: Tot slot het onderdeel handelen vanuit waarden. Je moet beargumenteerd laten zien hoe je een morele kwestie kunt analyseren en oplossen, met verwijzing naar onder andere de AVG-regels. Welke kwestie heb jij geanalyseerd?
+Dylan: O ja, ethiek. Nou, er was wel een moment dat iemand binnen het bedrijf iets wilde delen wat eigenlijk een beetje vertrouwelijk was met een externe partij, om zo sneller informatie los te krijgen. Dat voelde niet helemaal lekker bij mij.
+Docent: Hoe heb je die situatie vervolgens geanalyseerd en opgelost aan de hand van de AVG gedragsregels?
+Dylan: Ik dacht gewoon: dit is niet eerlijk en het mag vast niet volgens de wet. Je moet gewoon integer zijn als adviseur, dat staat volgens mij ook wel in die AVG-regels, dat je eerlijk moet handelen. Dus ik heb tegen die collega gezegd: joh, laten we dat maar niet doen, want als de manager erachter komt hebben we gezeur. En toen hebben we het maar niet gedaan.
+Docent: Heb je de gedragscode er ook echt bij gepakt om te kijken welke specifieke regels of principes hier in het geding waren?
+Dylan: Nee, niet echt de code erbij gepakt tijdens het moment zelf. Dat wist ik zo uit mijn hoofd natuurlijk niet. Maar het ging om het principe van betrouwbaarheid en dat je geen gekke dingen doet achter de rug van de klant om. Dat voel je vaak wel aan op je klompen.
+Docent: Helder. Dan laat ik het hierbij voor wat betreft de vragen. Dankjewel, Dylan. We gaan nu over tot de beraadslaging.

@@ -1,0 +1,29 @@
+# Gespreksscript: assessment Bart (omgezet uit transcript-Bart.txt)
+# Wijs bovenaan elke spreker een stem toe met @voice, schrijf daaronder de dialoog.
+# Aanhalingstekens en koppeltekens mag je gewoon gebruiken; die worden bij het
+# genereren automatisch opgeschoond voor een vloeiende uitspraak.
+
+@voice Examinator = nl-NL-Chirp3-HD-Aoede
+@voice Bart       = nl-NL-Chirp3-HD-Zubenelgenubi
+
+Examinator: Welkom Bart bij dit midterm assessment. Laten we meteen beginnen met het eerste criterium: veranderen en evalueren. Welke conceptuele modellen of theorieën heb je gebruikt bij de analyse van de verandering?
+Bart: Ja, veranderen en evalueren? Conceptueel concept? ja we hebben wel wat voorbij zien komen. Ik weet even de naam niet meer, maar dat waren dan in verschillende fases hè, volgens mij, toch?
+Examinator: Kun je beschrijven hoe je de veranderbehoefte concreet in kaart hebt gebracht bij de medewerkers?
+Bart: Ja, nou vooral veel gepraat hè, eerst met mensen. Dus verschillende mensen gesproken. Gevraagd hoe zij het probleem zien, wat precies het probleem is. Een beetje uitgelegd wie ik ben en ja, wat ik kon doen. Zoiets. Is dat wat je bedoelt?
+Examinator: En welk specifiek model of welke veranderstrategie lag hieraan ten grondslag?
+Bart: Nee, ik kan zo even niet een model bedenken, eigenlijk.
+Examinator: Laten we overgaan naar het omgaan met weerstand. Hoe heb je dat aangepakt toen je merkte dat er weerstand was tegen de nieuwe software?
+Bart: Ja, weerstand? Ja, op een bepaalde afdeling moesten ze dus met nieuwe software gaan werken. En ja, er waren mensen die dan wel weerstand vertoonden, ja. Nou, ik heb ze dat toch uitgelegd dat het toch echt moest, dat het heel belangrijk was dat ze dat gingen doen. En omdat het management dat ook heel belangrijk vond. En dat het daarna hun werk ook veel makkelijker zou worden. Dus dat heb ik ze dan uitgelegd en ja, ik weet niet of dat nu meer of minder weerstand is. Ik heb het eigenlijk niet gecheckt.
+Examinator: Hoe had je dat achteraf gezien anders kunnen aanpakken of kunnen controleren?
+Bart: Ja, hoe had ik dat aan kunnen pakken om dat te checken? Ik had ze kunnen vragen daarna van: is het nu wel duidelijk? Ik had misschien kunnen observeren, een dagje meelopen, kijken of ze het nu wel gingen gebruiken en dan misschien helpen een beetje. Ja, andere manieren? Ja, ik weet niet.
+Examinator: Als we kijken naar jouw professionele bijdrage in het team, wat was jouw specifieke rol en waar liggen jouw kwaliteiten?
+Bart: Nou ja, op een gegeven moment merkte ik wel dat ik daar gewoon als bijna als collega werd gezien. Het was altijd wel heel gezellig, ze konden altijd wel lachen om mijn humor. En ja, we zijn allebei voor dezelfde voetbalclub. Dus ja, dat was vooral mijn bijdrage. Ik had natuurlijk ook een teamgenoot en die was dan meer van de inhoud hoor. En ik was dan meer van de relatie. Dus ja, ik ben wel makkelijk sociaal, dus dat is mijn talent, daar ben ik wel trots op. Toch? Zoiets.
+Examinator: En hoe zat het met de interculturele aspecten binnen dit project? Heb je daar rekening mee moeten houden?
+Bart: Ja, ik kan niet zeggen wat ik daar nou precies? Dat is heel moeilijk altijd als je in een team zit, wat is nou van jou en wat is van de ander. We hebben allebei even goed bijgedragen. Ik heb vooral mijn teamgenoot gemotiveerd en af en toe meegekeken en wat opmerkingen gemaakt. Kleine dingetjes, weet je wel. Hij is daar gewoon beter in en ik ben meer van het grote geheel en het sociale. En ja, intercultureel? Er zaten ook mensen uit de Randstad daarzo, en dat vind ik altijd wel gezellige mensen. Ze zijn natuurlijk anders dan Brabanders, en ja, ik hou ook van Amsterdammers. Dus ja, ik vind dat nooit zo'n moeite met interculturele issues. Ik kan met iedereen uit Nederland wel omgaan, dus ja, dat.
+Examinator: Tot slot, handelen vanuit waarden. Hoe ben je omgegaan met de vertrouwelijkheid van informatie tussen het management en de medewerkers?
+Bart: Vertrouwelijkheid en eerlijkheid? Ja, ik vond dat wel moeilijk, want soms hoorde ik iets bij het management wat het management over een bepaalde afdeling dacht. Moet je dat dan vertellen als je op zo'n afdeling rondloopt? Dat is moeilijk. Ik hou dan gewoon mijn mond en ik zeg: ja, dat moet het management zelf maar doen hoor, ik ben niet de boodschapper, jongen. Dus ja, ik heb gewoon net gedaan alsof ik het niet gehoord had. En soms hoorde ik wel iets van de afdeling over een manager, en dat gaf ik dan wel weer door terug aan het management, zo van: nou, ze vinden dat geen goed idee wat jullie daar bedacht hadden hoor. Dus zo deed ik dat dan een beetje.
+Examinator: Vind je dat achteraf gezien een professionele en ethische houding, mede in het licht van de OOA-gedragscode?
+Bart: Ja, goede vraag. Ik weet niet, ja. Misschien had ik dat ook niet moeten doen. Maar ja, het management is mijn opdrachtgever hè, dus die hebben mij ingehuurd om informatie te vergaren. Niet de medewerkers, die betalen mij niet, dus ja. Dus zo.
+Examinator: Ben je bekend met de specifieke gedragsregels van de OOA?
+Bart: Oh, die heb ik niet gezien, die gedragsregels. Sorry.
+Examinator: Helder. Dan ronden we het gesprek hierbij af.

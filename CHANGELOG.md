@@ -18,6 +18,25 @@ Dit bestand is het tegenhanger-artefact van `BLUEPRINT.html`:
 
 ---
 
+## v1.9 — 2026-06-03 · F9 (feedbackrapport) onder test
+
+Het printbare A4-rapport is het eindproduct dat de student meekrijgt; de notitie-parser en de
+slaag/zak-samenvatting bepalen wat erop staat.
+
+### Verbeteringen
+
+- **F9 — FeedbackView** (`tests/component/FeedbackView.test.tsx`): de notitie-parser splitst
+  `✓ tag`-regels van vrije tekst en toont het juiste niveau-badge; de samenvatting toont GESLAAGD
+  (volledig, geen "Onder") vs. GEZAKT (één "Onder"); de printknop roept `window.print` aan.
+
+### Lessen
+
+- `window.print` bestaat niet in jsdom (aanroep zou falen), dus de printknop was niet direct te testen.
+  → Geleerde conventie: stub niet-geïmplementeerde browser-API's met `vi.stubGlobal("print", vi.fn())`
+  en assert de aanroep.
+
+---
+
 ## v1.8 — 2026-06-03 · F8 (resultatenmatrix) onder test
 
 De slaag/zak-logica en de cijferberekening komen samen in de resultatenmatrix; dit is de plek waar de
