@@ -74,7 +74,7 @@
     <span class="tag">BLAUWDRUK</span>
     <span class="tag">v1.1</span>
     <span class="tag">build-ready</span>
-    <span class="tag" style="background:#ecfdf5;color:#047857">F0–F3 gerealiseerd</span>
+    <span class="tag" style="background:#ecfdf5;color:#047857">F0–F4 gerealiseerd</span>
   </div>
   <h1>PROMEF Assessment Tool &amp; AI Notulist</h1>
   <p><strong>Doel van dit document:</strong> een complete, op zichzelf staande bouwspecificatie. Een software engineer
@@ -862,7 +862,8 @@ als de gate gehaald is.</p>
 
 <!-- F4 -->
 <div class="card phase" id="f4">
-<h3>F4 · Kalenderoverzicht (CalendarOverview)</h3>
+<h3>F4 · Kalenderoverzicht (CalendarOverview) <span class="pill" style="background:#ecfdf5;color:#047857">✅ GEREALISEERD</span></h3>
+<p class="small"><strong>Status:</strong> component-tests toegevoegd (<code>tests/component/CalendarOverview.test.tsx</code>): statusbadge-mapping (Onbeoordeeld/Deels/Voltooid), klik-naar-assessment, pauze toevoegen (lege slot) en verwijderen (✕), en drag-&amp;-drop binnen vs. buiten een groep. Component bestond al. NB: drag-&amp;-drop test je in jsdom met <code>fireEvent.drop(row, { dataTransfer })</code> — de handler leest <code>getData("text/plain")</code>, dus een stub volstaat (geen echte dragStart nodig).</p>
 <p><strong>Doel:</strong> roosterweergave met statistieken, statusbadges, pauzes en drag-&amp;-drop.</p>
 <h4>Subtaken</h4>
 <ul class="checks">
