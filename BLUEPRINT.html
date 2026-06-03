@@ -72,9 +72,9 @@
 <header class="title">
   <div>
     <span class="tag">BLAUWDRUK</span>
-    <span class="tag">v1.9</span>
+    <span class="tag">v1.10</span>
     <span class="tag">build-ready</span>
-    <span class="tag" style="background:#ecfdf5;color:#047857">F0–F9 gerealiseerd</span>
+    <span class="tag" style="background:#ecfdf5;color:#047857">F0–F10 gerealiseerd</span>
   </div>
   <h1>PROMEF Assessment Tool &amp; AI Notulist</h1>
   <p><strong>Doel van dit document:</strong> een complete, op zichzelf staande bouwspecificatie. Een software engineer
@@ -1030,7 +1030,8 @@ voor welke fasen/tracks veilig gelijktijdig kunnen en welke gedeelde bestanden j
 
 <!-- F10 -->
 <div class="card phase" id="f10">
-<h3>F10 · Databeheer (DataManager)</h3>
+<h3>F10 · Databeheer (DataManager) <span class="pill" style="background:#ecfdf5;color:#047857">✅ GEREALISEERD</span></h3>
+<p class="small"><strong>Testnotitie:</strong> component-tests (<code>tests/component/DataManager.test.tsx</code>): geldige CSV → <code>onImportData</code> (geparste groups/teams/students), ongeldige CSV → foutbanner zonder import, back-up-bundle bevat alle vier de slices (<code>downloadBackup</code> gemockt), geldig herstel → <code>onRestoreBackup</code>, ontbrekende sleutel → foutbanner zonder herstel, en reset mét/zónder bevestiging. CSV/JSON-inlezen via <code>FileReader.readAsText</code> + de verborgen-file-input-techniek.</p>
 <p><strong>Doel:</strong> CSV-import, JSON back-up/herstel, demo-roster uit <code>public/demo.csv</code>, volledige reset.</p>
 <h4>Subtaken</h4>
 <ul class="checks">

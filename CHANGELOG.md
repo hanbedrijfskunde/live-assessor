@@ -18,6 +18,27 @@ Dit bestand is het tegenhanger-artefact van `BLUEPRINT.html`:
 
 ---
 
+## v1.10 — 2026-06-03 · F10 (databeheer) onder test
+
+Import/export en reset zijn de in-/uitgangen van de hele dataset; één fout hier kan een heel cohort
+wissen of corrumperen, dus de validatie- en foutpaden zijn expliciet getest.
+
+### Verbeteringen
+
+- **F10 — DataManager** (`tests/component/DataManager.test.tsx`): geldige CSV → `onImportData` met
+  geparste entiteiten; ongeldige CSV → foutbanner, géén import; back-up-bundle bevat alle vier de
+  slices (`groepen/teams/studenten/assessments`, `downloadBackup` gemockt); geldig herstel →
+  `onRestoreBackup`; ontbrekende sleutel → foutbanner, géén herstel; reset alleen na bevestiging.
+
+### Lessen
+
+- Geen nieuwe; dit hergebruikt bestaande conventies (verborgen-file-input via `Object.defineProperty`
+  + `fireEvent.change`, en het mocken van één named export — hier `downloadBackup`). Dat de fase zonder
+  nieuwe trucs kon worden gedekt, bevestigt dat de eerder vastgelegde conventies de form-/IO-zware
+  componenten afdoende dekken.
+
+---
+
 ## v1.9 — 2026-06-03 · F9 (feedbackrapport) onder test
 
 Het printbare A4-rapport is het eindproduct dat de student meekrijgt; de notitie-parser en de
