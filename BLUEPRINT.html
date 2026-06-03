@@ -72,8 +72,9 @@
 <header class="title">
   <div>
     <span class="tag">BLAUWDRUK</span>
-    <span class="tag">v1.0</span>
+    <span class="tag">v1.1</span>
     <span class="tag">build-ready</span>
+    <span class="tag" style="background:#ecfdf5;color:#047857">F0 + F1 gerealiseerd</span>
   </div>
   <h1>PROMEF Assessment Tool &amp; AI Notulist</h1>
   <p><strong>Doel van dit document:</strong> een complete, op zichzelf staande bouwspecificatie. Een software engineer
@@ -251,9 +252,18 @@ en persistentie in <code>localStorage</code>. Gemini wordt uitsluitend server-si
 ├─ index.html                  # mount-point #root, laadt /src/main.tsx
 ├─ vite.config.ts              # plugins: react(), tailwindcss(); alias @ -> .
 ├─ tsconfig.json               # target ES2022, jsx react-jsx, moduleResolution bundler, noEmit
-├─ app.ts                      # Express app (geen listen) — testbaar
-├─ server.ts                   # import app + app.listen(3000) + Vite/static wiring
+├─ vitest.config.ts            # jsdom default, coverage v8 (src/** + app.ts), excl. e2e/
+├─ vitest.setup.ts             # jest-dom matchers + RTL cleanup
+├─ playwright.config.ts        # baseURL :3000, webServer = npm run dev, @smoke grep
+├─ app.ts                      # Express app (geen listen) — testbaar, injecteerbare Gemini-client
+├─ server.ts                   # import app + Vite/static wiring + app.listen(3000)
+├─ BLUEPRINT.html              # deze blauwdruk (single source of truth — bij elke wijziging bijwerken)
+├─ CLAUDE.md                   # agent-instructies (incl. blueprint-sync-regel)
 ├─ .env / .env.example         # GEMINI_API_KEY
+├─ tests/
+│  ├─ unit/                    # Vitest: grading + utils (time/csv/storage/date)
+│  └─ api/                     # Supertest tegen app.ts (Gemini gemockt)
+├─ e2e/                        # Playwright (smoke + e2e-reizen)
 └─ src/
    ├─ main.tsx                 # entry
    ├─ index.css                # @import tailwindcss; fonts Inter/JetBrains; print-CSS
@@ -593,7 +603,14 @@ naar <code>student1Name/student2Name</code>). Mét sleutel → Gemini <code>gene
 <tr><td><span class="pill e2e">E2E</span></td><td>Playwright</td><td>kritieke gebruikersreizen end-to-end</td><td>F11 (+ deelreizen vanaf F5)</td></tr>
 </table>
 <div class="gate"><strong>Definition of Done per fase:</strong> (1) alle subtaken af · (2) alle nieuwe tests groen ·
-(3) <code>npm run lint</code> (tsc) schoon · (4) regressie groen · (5) commit gemaakt (push optioneel).</div>
+(3) <code>npm run lint</code> (tsc) schoon · (4) regressie groen · (5) commit gemaakt (push optioneel) ·
+(6) <code>BLUEPRINT.html</code> bijgewerkt naar de actuele staat.</div>
+<div class="note"><strong>Geleerde conventies (gerealiseerd):</strong>
+<ul style="margin:6px 0 0">
+  <li>API-tests draaien in Node via een per-bestand docblock <code>// @vitest-environment node</code> — Vitest 4 verwijderde <code>environmentMatchGlobs</code>.</li>
+  <li>Gemini-client is injecteerbaar (<code>setGeminiClientForTesting</code> / <code>resetGeminiClientForTesting</code>) zodat API-tests zonder netwerk draaien en het fallback-pad geforceerd kan worden.</li>
+  <li><code>localStorage</code> in tests: in-memory <code>Storage</code>-stub i.p.v. jsdom.</li>
+</ul></div>
 
 <!-- GITFLOW -->
 <h2 id="gitflow">A10 · Git-workflow</h2>
@@ -661,7 +678,8 @@ als de gate gehaald is.</p>
 
 <!-- F0 -->
 <div class="card phase" id="f0">
-<h3>F0 · Projectsetup &amp; tooling</h3>
+<h3>F0 · Projectsetup &amp; tooling <span class="pill" style="background:#ecfdf5;color:#047857">✅ GEREALISEERD</span></h3>
+<p class="small"><strong>Status:</strong> gedaan. <code>server.ts</code> gesplitst in <code>app.ts</code> (testbaar, injecteerbare Gemini-client via <code>setGeminiClientForTesting</code>) + <code>server.ts</code> (Vite/static + listen). Vitest + Playwright opgezet; smoke groen; <code>npm run build</code> bundelt frontend + <code>dist/server.cjs</code>.</p>
 <p><strong>Doel:</strong> draaiend skelet — lege React-app via Vite + Express, met test-harnas geconfigureerd.</p>
 <h4>Subtaken</h4>
 <ul class="checks">
@@ -682,7 +700,8 @@ als de gate gehaald is.</p>
 
 <!-- F1 -->
 <div class="card phase" id="f1">
-<h3>F1 · Domeinmodel &amp; pure utilities</h3>
+<h3>F1 · Domeinmodel &amp; pure utilities <span class="pill" style="background:#ecfdf5;color:#047857">✅ GEREALISEERD</span></h3>
+<p class="small"><strong>Status:</strong> domeinlaag onder test (25 tests groen). <code>types.ts</code> en <code>utils.ts</code> bestonden al; tests toegevoegd voor grading, tijd-helpers, <code>parseCSV</code>, localStorage en datum. Resterende dekking op <code>utils.ts</code> = <code>downloadBackup/downloadCSV</code> (browser-download) — gepland in F8/F10.</p>
 <p><strong>Doel:</strong> alle types, constanten en zijeffect-vrije functies — het hart van de business-logica, volledig getest.</p>
 <h4>Subtaken</h4>
 <ul class="checks">
@@ -695,7 +714,7 @@ als de gate gehaald is.</p>
   <li><code>getCijferFromScore</code>: grenswaarden 24→10, 23→9, 20→9, 16→8, 14→7, 12→6, 10→5, 9→4, 6→4.</li>
   <li><code>generateTimeSlots("09:00","11:00",30)</code> → 4 sloten; <code>timeToMinutes/minutesToTime</code> round-trip.</li>
   <li><code>parseCSV</code>: detecteert <code>;</code> en <code>,</code>; maakt groep/team/student; gooit fout bij ontbrekende kolommen; verdeelt sloten en slaat 12:00 over.</li>
-  <li><code>load/saveToLocalStorage</code>: schrijft+leest JSON; geeft fallback bij corrupte data (mock <code>localStorage</code>).</li>
+  <li><code>load/saveToLocalStorage</code>: schrijft+leest JSON; geeft fallback bij corrupte data. <em>NB: jsdom's <code>localStorage</code> is onbetrouwbaar onder Vitest — back hem met een in-memory <code>Storage</code>-stub i.p.v. de omgeving.</em></li>
 </ul>
 <div class="gate"><strong>Gate:</strong> ~100% dekking op utils/types; alle unit-tests groen.</div>
 <p><span class="pill commit">COMMIT</span> <code>feat(F1): domain types, criteria, grading &amp; utilities (tested)</code></p>
