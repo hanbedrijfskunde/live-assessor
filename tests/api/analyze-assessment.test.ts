@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { describe, it, expect, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import request from "supertest";
 import { app, setGeminiClientForTesting, resetGeminiClientForTesting } from "../../app";
 
@@ -83,5 +83,32 @@ describe("POST /api/analyze-assessment", () => {
 
     expect(res.status).toBe(500);
     expect(res.body.error).toBeTruthy();
+  });
+});
+
+// Without a client the fallback picks a scenario from transcript keywords.
+// After name-remap, student 1's criterion-1 score identifies the scenario:
+// A -> 3, B -> 2, C -> 4.
+describe("POST /api/analyze-assessment — fallback scenario routing", () => {
+  beforeEach(() => setGeminiClientForTesting(null));
+
+  const route = (transcriptText: string) =>
+    request(app).post("/api/analyze-assessment")
+      .send({ transcriptText, student1Name: "Bart", student2Name: "Lisa" });
+
+  it("routes an 'ADKAR' transcript to the excellent scenario (C)", async () => {
+    const res = await route("We hanteerden de ADKAR-methodiek.");
+    expect(res.body.simulated).toBe(true);
+    expect(res.body.analysis.scores.Bart[1]).toBe(4);
+  });
+
+  it("routes a 'stakeholder' transcript to scenario B", async () => {
+    const res = await route("We deden een stakeholdersanalyse.");
+    expect(res.body.analysis.scores.Bart[1]).toBe(2);
+  });
+
+  it("defaults to scenario A otherwise", async () => {
+    const res = await route("Een gewoon gesprek zonder trefwoorden.");
+    expect(res.body.analysis.scores.Bart[1]).toBe(3);
   });
 });

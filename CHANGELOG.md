@@ -18,6 +18,31 @@ Dit bestand is het tegenhanger-artefact van `BLUEPRINT.html`:
 
 ---
 
+## v1.7 — 2026-06-03 · F7 (backend & Gemini-audioanalyse) onder test
+
+De backend-kern was al in F0 getest (de server-split werd daar bewezen). F7 vult de twee resterende
+ongeteste paden aan: de keyword-gestuurde fallbackselectie en de frontend audio-upload-keten.
+
+### Verbeteringen
+
+- **Fallback-scenarioselectie** (`tests/api/analyze-assessment.test.ts`): zonder API-key kiest de
+  server een scenario op trefwoord in het transcript — `ADKAR`→C, `stakeholder`→B, anders→A. Na de
+  naam-remap is dat herkenbaar aan student-1's criterium-1-score (4/2/3).
+- **Audio-upload-pad** (`tests/component/AiNotulistPanel.test.tsx`): een geüpload audiobestand wordt
+  naar `/api/analyze-assessment` gePOST (gemockte `fetch`) en het teruggegeven transcript rendert.
+
+### Lessen
+
+- Een visueel verborgen file-input (`display:none`) wordt door `userEvent.upload` geweigerd; de upload
+  bereikte de handler nooit.
+  → Geleerde conventie: zet `files` via `Object.defineProperty` en dispatch `fireEvent.change`; mock
+  `fetch` voor het upload→API-pad.
+- De teruggegeven transcriptregel verschijnt twee keer in de UI — in de transcriptkolom én als quote in
+  de competentie-feed — waardoor `findByText` op "multiple elements" brak. `findAllByText` + een
+  lengte-check is dan de juiste assertie (variant op de bestaande "uniek anker"-conventie).
+
+---
+
 ## v1.6 — 2026-06-03 · F6 (AI-simulatie) onder test
 
 De client-side AI-simulatie (`buildSimulation`) is de motor achter de drie scoreprofiel-knoppen.

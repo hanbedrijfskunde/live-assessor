@@ -72,9 +72,9 @@
 <header class="title">
   <div>
     <span class="tag">BLAUWDRUK</span>
-    <span class="tag">v1.6</span>
+    <span class="tag">v1.7</span>
     <span class="tag">build-ready</span>
-    <span class="tag" style="background:#ecfdf5;color:#047857">F0–F6 gerealiseerd</span>
+    <span class="tag" style="background:#ecfdf5;color:#047857">F0–F7 gerealiseerd</span>
   </div>
   <h1>PROMEF Assessment Tool &amp; AI Notulist</h1>
   <p><strong>Doel van dit document:</strong> een complete, op zichzelf staande bouwspecificatie. Een software engineer
@@ -640,6 +640,7 @@ herstarten. Er is geen UI-veld voor de sleutel; hij hoort uitsluitend server-sid
   <li>Voor optionele config (bv. <code>GEMINI_API_KEY</code>): documenteer niet alleen het <em>bestaan</em>, maar ook het <em>moment</em> (vóór <code>npm run dev</code>, server herstarten) en de <em>plek</em> (server-side in <code>.env</code>, geen UI-veld).</li>
   <li>Geen echte persoonsnamen (studenten of docenten) in de broncode of testfixtures. De demo-roster leeft in <code>public/demo.csv</code> en wordt via <code>parseCSV</code> geladen; defaults voor <code>assessoren</code> zijn leeg; AI-fallback-scenario's gebruiken <code>Student 1</code>/<code>Student 2</code>. Een verse app start leeg.</li>
   <li>Timer-gestuurde UI (de <code>setInterval</code>-playback van de simulatie): test met <code>vi.useFakeTimers()</code> + <code>act(() =&gt; vi.advanceTimersByTime(...))</code>; gebruik <code>fireEvent</code> (niet <code>userEvent</code>) zolang nep-timers actief zijn.</li>
+  <li>Een verborgen file-input (<code>display:none</code>) weigert <code>userEvent.upload</code>: zet <code>files</code> via <code>Object.defineProperty</code> en dispatch <code>fireEvent.change</code>. Mock <code>fetch</code> voor het upload→API-pad.</li>
 </ul></div>
 
 <!-- GITFLOW -->
@@ -959,7 +960,8 @@ voor welke fasen/tracks veilig gelijktijdig kunnen en welke gedeelde bestanden j
 
 <!-- F7 -->
 <div class="card phase" id="f7">
-<h3>F7 · Backend &amp; Gemini-audioanalyse</h3>
+<h3>F7 · Backend &amp; Gemini-audioanalyse <span class="pill" style="background:#ecfdf5;color:#047857">✅ GEREALISEERD</span></h3>
+<p class="small"><strong>Testnotitie:</strong> de kern-API-tests (<code>tests/api/analyze-assessment.test.ts</code>) dekken simulate-analysis 200/404, de fallback met naam-remap, de gemockte Gemini-client (incl. solo = 1 sleutel) en de 500-foutroute. Aangevuld met de <strong>fallback-scenarioselectie op keyword</strong> (ADKAR→C, stakeholder→B, anders→A; herkenbaar aan student-1's criterium-1-score 4/2/3). Het <strong>audio-upload-pad</strong> is een component-test (<code>tests/component/AiNotulistPanel.test.tsx</code>) met gemockte <code>fetch</code>.</p>
 <p><strong>Doel:</strong> de twee API-endpoints met testbare app en gemockte Gemini-client.</p>
 <h4>Subtaken</h4>
 <ul class="checks">
