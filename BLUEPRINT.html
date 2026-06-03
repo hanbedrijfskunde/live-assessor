@@ -140,7 +140,7 @@ browser (`localStorage`); import/export verloopt via CSV en JSON.</p>
   <tr><td>Bundler/dev</td><td>Vite</td><td>^6.2.3</td><td>HMR, build</td></tr>
   <tr><td>Styling</td><td>Tailwind CSS via <code>@tailwindcss/vite</code></td><td>^4.1.14</td><td>utility-first, geen aparte config nodig</td></tr>
   <tr><td>Iconen</td><td>lucide-react</td><td>^0.546.0</td><td>consistente icon-set</td></tr>
-  <tr><td>Animatie</td><td>motion</td><td>^12.23.24</td><td>subtiele transities (optioneel)</td></tr>
+  <tr><td>Animatie</td><td>motion</td><td>^12.23.24</td><td>als dependency aanwezig, maar momenteel niet geïmporteerd in <code>src/</code></td></tr>
   <tr><td>Backend</td><td>Express</td><td>^4.21.2</td><td>API + serveren build</td></tr>
   <tr><td>AI</td><td>@google/genai</td><td>^2.4.0</td><td>Gemini structured output</td></tr>
   <tr><td>Config</td><td>dotenv</td><td>^17.2.3</td><td>`GEMINI_API_KEY`</td></tr>
@@ -183,24 +183,27 @@ zodat hij in tests gemockt of op <code>null</code> (fallback-pad) gezet kan word
 
 <!-- ARCHITECTUUR -->
 <h2 id="architectuur">A3 · Architectuur</h2>
-<p>Eén Express-proces serveert in development de React-app via Vite-middleware en biedt twee API-endpoints. In productie
+<p>Eén Express-proces serveert in development de React-app via Vite-middleware. In productie
 serveert hetzelfde proces de statische <code>dist/</code>-build. De frontend is een SPA met centrale state in <code>App</code>
-en persistentie in <code>localStorage</code>. Gemini wordt uitsluitend server-side aangeroepen.</p>
+en persistentie in <code>localStorage</code>. De AI-simulatie draait volledig in de browser (<code>buildSimulation()</code>);
+de enige actieve API-call vanuit de client is <code>/api/analyze-assessment</code> voor audio/transcript-analyse, die
+Gemini uitsluitend server-side aanroept. (<code>/api/simulate-analysis</code> bestaat nog maar wordt niet door de client gebruikt.)</p>
 
 <div class="diagram-label">📋 Mermaid-broncode (voor AI)</div>
 <pre><code>flowchart LR
   subgraph Browser["Browser (SPA)"]
     UI["React UI · App + 6 views"]
+    SIM["buildSimulation()<br/>client-side AI-simulatie"]
     LS[("localStorage<br/>promef_*")]
     UI <--> LS
+    UI --> SIM
   end
   subgraph Node["Node-proces (Express)"]
-    API["Express API"]
+    API["Express API<br/>/api/analyze-assessment<br/>(/api/simulate-analysis = legacy, ongebruikt)"]
     VITE["Vite middleware (dev)<br/>static dist (prod)"]
   end
   GEM["Google Gemini API"]
   UI -- "GET / (html, assets)" --> VITE
-  UI -- "POST /api/simulate-analysis" --> API
   UI -- "POST /api/analyze-assessment" --> API
   API -- "audio/transcript + schema" --> GEM
   GEM -- "structured JSON" --> API</code></pre>
@@ -208,16 +211,17 @@ en persistentie in <code>localStorage</code>. Gemini wordt uitsluitend server-si
 <div class="mermaid">flowchart LR
   subgraph Browser["Browser (SPA)"]
     UI["React UI · App + 6 views"]
+    SIM["buildSimulation()<br/>client-side AI-simulatie"]
     LS[("localStorage<br/>promef_*")]
     UI <--> LS
+    UI --> SIM
   end
   subgraph Node["Node-proces (Express)"]
-    API["Express API"]
+    API["Express API<br/>/api/analyze-assessment<br/>(/api/simulate-analysis = legacy, ongebruikt)"]
     VITE["Vite middleware (dev)<br/>static dist (prod)"]
   end
   GEM["Google Gemini API"]
   UI -- "GET / (html, assets)" --> VITE
-  UI -- "POST /api/simulate-analysis" --> API
   UI -- "POST /api/analyze-assessment" --> API
   API -- "audio/transcript + schema" --> GEM
   GEM -- "structured JSON" --> API</div>
@@ -734,11 +738,11 @@ als de gate gehaald is.</p>
   <li>State: <code>groepen/teams/studenten/assessments</code> + <code>activeView/activeTeamId/activeStudentFeedbackId</code>.</li>
   <li><code>useEffect</code> load-on-mount met fallback naar seed-data; <code>updateAndSave*</code>-helpers (state + localStorage).</li>
   <li>Alle callback-handlers: add/delete groep (cascade), bulk teams, add/delete student, move team, modify pauze, save assessment, import/restore/example/reset.</li>
-  <li>Header met 4 tabs + sessie-statusregel; routing op <code>activeView</code>; placeholders voor de 6 views.</li>
+  <li>Header met 4 tabs + sessie-statusregel; routing op <code>activeView</code> naar de 6 views.</li>
 </ul>
 <h4>Tests <span class="pill int">INTEGRATIE</span></h4>
 <ul>
-  <li>App mount laadt seed-data; tab-wissel rendert juiste placeholder.</li>
+  <li>App mount laadt seed-data; tab-wissel rendert de juiste view.</li>
   <li><code>handleDeleteGroep</code> verwijdert groep + bijbehorende teams/studenten/assessments (cascade).</li>
   <li>Een save-assessment schrijft naar <code>promef_assessments</code> en overleeft remount.</li>
 </ul>

@@ -2,13 +2,24 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## ⚠️ Keep the blueprint in sync
+## ⚠️ Keep the blueprint current — no legacy descriptions
 
-`BLUEPRINT.html` is the authoritative, self-contained build specification for this application.
-**After every change to the code, update `BLUEPRINT.html` in the same change** so it always
-describes the current state of the app — data model, domain rules, screen behaviour, API
-contracts, and the phased build/test plan. Treat the blueprint as a first-class deliverable:
-a code change is not complete until the blueprint reflects it.
+`BLUEPRINT.html` is the authoritative, self-contained specification for this application and must
+**always describe the current state of the app**. After every change to the code, update
+`BLUEPRINT.html` in the same change. A code change is not complete until the blueprint reflects it.
+
+"Current" means more than appending — actively **remove or rewrite anything that no longer holds**:
+
+- **No stale framing.** When a planned item is realized, move its reference text from future to
+  present tense ("toe te voegen" / "te bouwen" / "splits X" → done), and mark the phase realized.
+- **No dead references.** Remove diagram arrows, endpoints, files, props, or dependencies that no
+  longer exist or are no longer used (e.g. a UI→endpoint arrow for a call the client dropped, or a
+  dependency that is installed but not imported — describe it as such, don't imply it's active).
+- **Keep both diagram registers honest.** Every Mermaid block exists twice (source + rendered);
+  update both, and keep the prose around it consistent with the picture.
+- **Reference vs plan.** The architecture/stack/data sections (Deel A) are present-tense reference
+  and must match reality now. The phase cards (Deel B) are the plan; mark realized phases with a
+  status line, but don't let realized reality contradict the recipe text.
 
 > The blueprint is maintained as `BLUEPRINT.html` only (HTML with embedded Mermaid — each diagram
 > appears both rendered and as copyable source). There is no Markdown variant; do not create one.
