@@ -6,7 +6,7 @@ import AssessmentView from "../../src/components/AssessmentView";
 import type { Groep, Team, Student, TeamAssessment } from "../../src/types";
 
 const groep: Groep = {
-  id: "g1", name: "BKN-F01", assessoren: ["Sonia", "Mark"],
+  id: "g1", name: "BKN-F01", assessoren: [],
   datum: "2026-04-07", startTime: "09:00", endTime: "13:30", slotDuration: 30, pauzes: ["12:00"],
 };
 const team: Team = { id: "t1", groepId: "g1", teamNummer: "1", slotTime: "09:00" };

@@ -72,7 +72,7 @@
 <header class="title">
   <div>
     <span class="tag">BLAUWDRUK</span>
-    <span class="tag">v1.4</span>
+    <span class="tag">v1.5</span>
     <span class="tag">build-ready</span>
     <span class="tag" style="background:#ecfdf5;color:#047857">F0–F5 gerealiseerd</span>
   </div>
@@ -270,6 +270,8 @@ Gemini uitsluitend server-side aanroept. (<code>/api/simulate-analysis</code> be
 ├─ CLAUDE.md                   # agent-instructies (incl. blueprint-sync-regel)
 ├─ .env.example                # sjabloon met GEMINI_API_KEY (in git)
 ├─ .env                         # gitignored — kopie van .env.example met ingevulde sleutel
+├─ public/
+│  └─ demo.csv                  # demo-roster (Student;Groep;Team) — geladen via "Laad Voorbeeldset"
 ├─ tests/
 │  ├─ unit/                    # Vitest: grading + utils (time/csv/storage/date)
 │  ├─ component/               # Vitest + RTL: losse view-componenten
@@ -280,7 +282,7 @@ Gemini uitsluitend server-side aanroept. (<code>/api/simulate-analysis</code> be
    ├─ main.tsx                 # entry
    ├─ index.css                # @import tailwindcss; fonts Inter/JetBrains; print-CSS
    ├─ types.ts                 # domeintypes + CRITERIA + LEVEL_* + getCijferFromScore
-   ├─ utils.ts                 # seed-data + localStorage + CSV + tijd-helpers
+   ├─ utils.ts                 # localStorage + CSV-parse + tijd-helpers (geen seed-namen)
    └─ components/
       ├─ CalendarOverview.tsx
       ├─ AssessmentView.tsx
@@ -448,13 +450,15 @@ export const LEVEL_SCORES: Record&lt;LevelType, number&gt; = { Onder:1, Op:2, Bo
 <!-- PERSISTENTIE -->
 <h2 id="persistentie">A6 · Persistentie &amp; state-flow</h2>
 <p>State leeft in <code>App</code> als vier stukken. Elke mutatie gaat via een <code>updateAndSave*</code>-helper die
-zowel React-state zet als naar <code>localStorage</code> schrijft. Bij mount wordt geladen met fallback naar seed-data.</p>
+zowel React-state zet als naar <code>localStorage</code> schrijft. Bij mount wordt geladen uit <code>localStorage</code>;
+een verse browser (lege opslag) start <strong>leeg</strong> — er zit geen persoonsdata in de broncode. De demo-roster
+wordt op verzoek uit <code>public/demo.csv</code> geladen via "Laad Voorbeeldset" (zie A7/DataManager).</p>
 <table>
 <tr><th>localStorage-sleutel</th><th>Type</th><th>Fallback bij leeg</th></tr>
-<tr><td><code>promef_groepen</code></td><td><code>Groep[]</code></td><td><code>INITIAL_GROEPEN</code></td></tr>
-<tr><td><code>promef_teams</code></td><td><code>Team[]</code></td><td><code>INITIAL_TEAMS</code></td></tr>
-<tr><td><code>promef_studenten</code></td><td><code>Student[]</code></td><td><code>INITIAL_STUDENTEN</code></td></tr>
-<tr><td><code>promef_assessments</code></td><td><code>Record&lt;string,TeamAssessment&gt;</code> (key=teamId)</td><td><code>INITIAL_ASSESSMENTS</code></td></tr>
+<tr><td><code>promef_groepen</code></td><td><code>Groep[]</code></td><td><code>[]</code></td></tr>
+<tr><td><code>promef_teams</code></td><td><code>Team[]</code></td><td><code>[]</code></td></tr>
+<tr><td><code>promef_studenten</code></td><td><code>Student[]</code></td><td><code>[]</code></td></tr>
+<tr><td><code>promef_assessments</code></td><td><code>Record&lt;string,TeamAssessment&gt;</code> (key=teamId)</td><td><code>{}</code></td></tr>
 </table>
 
 <div class="diagram-label">📋 Mermaid-broncode (voor AI)</div>
@@ -541,7 +545,8 @@ zowel React-state zet als naar <code>localStorage</code> schrijft. Bij mount wor
 <h3>DataManager</h3>
 <ul>
   <li>CSV-import (kolommen Student/Naam, Groep/Klas, Team/Teamnummer; delimiter <code>;</code> of <code>,</code> auto-detect) → reset assessments.</li>
-  <li>JSON back-up maken (alle 4 stukken) + herstellen (valideert aanwezige keys). Voorbeelddata laden. Volledige reset (met bevestiging).</li>
+  <li>"Laad Voorbeeldset" haalt <code>public/demo.csv</code> op (<code>fetch</code>), parseert het met dezelfde <code>parseCSV</code> als de import en laadt zo een verse, <em>ongescoorde</em> democohort (roster-only — geen voorgevulde scores). Faalmelding via <code>alert</code>.</li>
+  <li>JSON back-up maken (alle 4 stukken) + herstellen (valideert aanwezige keys). Volledige reset (met bevestiging).</li>
 </ul>
 
 <!-- API -->
@@ -566,8 +571,9 @@ of <code>404</code>. <span class="small">De client gebruikt dit niet meer (simul
     feedback:  { [naam]: { strengths:string[], improvements:string[] } }
   } }
 // Fout: 500 { error, details }</code></pre>
-<p>Gedrag: zónder geldige <code>GEMINI_API_KEY</code> → graceful fallback met een vast scenario (namen worden geremapt
-naar <code>student1Name/student2Name</code>). Mét sleutel → Gemini <code>generateContent</code> met
+<p>Gedrag: zónder geldige <code>GEMINI_API_KEY</code> → graceful fallback met een vast scenario. De scenario's bevatten
+geen echte namen: ze gebruiken neutrale placeholders (<code>Student 1</code>/<code>Student 2</code>) die runtime worden
+geremapt naar <code>student1Name/student2Name</code>. Mét sleutel → Gemini <code>generateContent</code> met
 <code>responseSchema</code> (objectsleutels exact gelijk aan de aangeleverde studentnamen; 1 student bij solo),
 <code>temperature 0.2</code>, Nederlandstalige systeeminstructie.</p>
 <p><strong>Wanneer &amp; waar de sleutel invoeren:</strong> de key is <em>optioneel</em> — de app en tests draaien
@@ -632,6 +638,7 @@ herstarten. Er is geen UI-veld voor de sleutel; hij hoort uitsluitend server-sid
   <li>Namen als "BKN-F01" komen in een view vaak meervoudig voor (kaart + <code>&lt;option&gt;</code>s); query op een uniek anker (bv. <code>getAllByTitle("Verwijder groep")</code>-telling) i.p.v. <code>getByText</code>.</li>
   <li>Een label dat zowel kop (<code>&lt;span&gt;</code>) als knop is (bv. niveau "Op"/"Boven"): query met <code>getByRole("button", …)</code>. Bij identieke controls over meerdere kaarten (duo): <code>getAllByRole(...)</code> + positie-index (kaartvolgorde).</li>
   <li>Voor optionele config (bv. <code>GEMINI_API_KEY</code>): documenteer niet alleen het <em>bestaan</em>, maar ook het <em>moment</em> (vóór <code>npm run dev</code>, server herstarten) en de <em>plek</em> (server-side in <code>.env</code>, geen UI-veld).</li>
+  <li>Geen echte persoonsnamen (studenten of docenten) in de broncode of testfixtures. De demo-roster leeft in <code>public/demo.csv</code> en wordt via <code>parseCSV</code> geladen; defaults voor <code>assessoren</code> zijn leeg; AI-fallback-scenario's gebruiken <code>Student 1</code>/<code>Student 2</code>. Een verse app start leeg.</li>
 </ul></div>
 
 <!-- GITFLOW -->
@@ -820,7 +827,7 @@ voor welke fasen/tracks veilig gelijktijdig kunnen en welke gedeelde bestanden j
 <ul class="checks">
   <li><code>src/types.ts</code>: interfaces, <code>LevelType</code>, <code>LEVEL_SCORES</code>, <code>LEVEL_COLORS</code>, <code>LEVEL_BADGES</code>, de 6 <code>CRITERIA</code> (zie A4), <code>getCijferFromScore</code>.</li>
   <li><code>src/utils.ts</code>: <code>generateId</code>, <code>timeToMinutes</code>, <code>minutesToTime</code>, <code>generateTimeSlots</code>, <code>formatDutchDate</code>, <code>parseCSV</code>, <code>downloadBackup</code>, <code>downloadCSV</code>, <code>load/saveToLocalStorage</code>.</li>
-  <li>Seed-data: <code>INITIAL_GROEPEN</code>, <code>INITIAL_TEAMS</code>, <code>INITIAL_STUDENTEN</code>, <code>INITIAL_ASSESSMENTS</code>.</li>
+  <li>Géén seed-constanten met namen in code. Demo-roster staat in <code>public/demo.csv</code> (<code>Student;Groep;Team</code>) en wordt via <code>parseCSV</code> geladen.</li>
 </ul>
 <h4>Tests <span class="pill unit">UNIT</span></h4>
 <ul>
@@ -841,13 +848,13 @@ voor welke fasen/tracks veilig gelijktijdig kunnen en welke gedeelde bestanden j
 <h4>Subtaken</h4>
 <ul class="checks">
   <li>State: <code>groepen/teams/studenten/assessments</code> + <code>activeView/activeTeamId/activeStudentFeedbackId</code>.</li>
-  <li><code>useEffect</code> load-on-mount met fallback naar seed-data; <code>updateAndSave*</code>-helpers (state + localStorage).</li>
+  <li><code>useEffect</code> load-on-mount uit <code>localStorage</code> met lege defaults (<code>[]</code>/<code>{}</code>; geen code-seed); <code>updateAndSave*</code>-helpers (state + localStorage).</li>
   <li>Alle callback-handlers: add/delete groep (cascade), bulk teams, add/delete student, move team, modify pauze, save assessment, import/restore/example/reset.</li>
   <li>Header met 4 tabs + sessie-statusregel; routing op <code>activeView</code> naar de 6 views.</li>
 </ul>
 <h4>Tests <span class="pill int">INTEGRATIE</span></h4>
 <ul>
-  <li>App mount laadt seed-data; tab-wissel rendert de juiste view.</li>
+  <li>App mount laadt persisted data uit localStorage (verse app is leeg); tab-wissel rendert de juiste view.</li>
   <li><code>handleDeleteGroep</code> verwijdert groep + bijbehorende teams/studenten/assessments (cascade).</li>
   <li>Een save-assessment schrijft naar <code>promef_assessments</code> en overleeft remount.</li>
 </ul>
@@ -1016,12 +1023,12 @@ voor welke fasen/tracks veilig gelijktijdig kunnen en welke gedeelde bestanden j
 <!-- F10 -->
 <div class="card phase" id="f10">
 <h3>F10 · Databeheer (DataManager)</h3>
-<p><strong>Doel:</strong> CSV-import, JSON back-up/herstel, voorbeelddata, volledige reset.</p>
+<p><strong>Doel:</strong> CSV-import, JSON back-up/herstel, demo-roster uit <code>public/demo.csv</code>, volledige reset.</p>
 <h4>Subtaken</h4>
 <ul class="checks">
   <li>CSV-import → <code>parseCSV</code> → <code>onImportData</code> (reset assessments) + foutbanner bij ongeldig.</li>
   <li>JSON back-up maken (4 stukken) + herstellen met key-validatie.</li>
-  <li>Voorbeeldset laden; volledige reset met dubbele bevestiging.</li>
+  <li>"Laad Voorbeeldset" = <code>fetch("/demo.csv")</code> → <code>parseCSV</code> → import (ongescoorde roster); volledige reset met dubbele bevestiging.</li>
 </ul>
 <h4>Tests <span class="pill unit">COMPONENT</span> <span class="pill int">INTEGRATIE</span></h4>
 <ul>
@@ -1045,7 +1052,7 @@ voor welke fasen/tracks veilig gelijktijdig kunnen en welke gedeelde bestanden j
 </ul>
 <h4>Tests — volledige piramide</h4>
 <ul>
-  <li><span class="pill e2e">E2E</span> Reis 1: voorbeelddata laden → team openen → alle criteria scoren → Voltooid → Resultaten tonen cijfer → rapport printen (print-dialog gemockt/afgevangen).</li>
+  <li><span class="pill e2e">E2E</span> Reis 1: demo-CSV laden ("Laad Voorbeeldset") → team openen → alle criteria scoren → Voltooid → Resultaten tonen cijfer → rapport printen (print-dialog gemockt/afgevangen).</li>
   <li><span class="pill e2e">E2E</span> Reis 2: nieuwe groep + bulk-teams + student → inroosteren via drag-drop → assessment.</li>
   <li><span class="pill e2e">E2E</span> Reis 3: AI-simulatie "onvoldoende" toepassen → student "Gezakt" in matrix.</li>
   <li><span class="pill e2e">E2E</span> Reis 4: CSV-import → JSON back-up → reset → herstel.</li>

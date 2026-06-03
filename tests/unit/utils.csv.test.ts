@@ -5,9 +5,9 @@ describe("parseCSV", () => {
   it("parses semicolon-delimited data into groups, teams and students", () => {
     const csv = [
       "Student;Groep;Team",
-      "Baran;BKN-F01;1",
-      "Ivan;BKN-F01;1",
-      "Sanne;BKN-F01;2",
+      "Student Een;BKN-F01;1",
+      "Student Twee;BKN-F01;1",
+      "Student Drie;BKN-F01;2",
     ].join("\n");
 
     const { groups, teams, students } = parseCSV(csv);
@@ -16,24 +16,24 @@ describe("parseCSV", () => {
     expect(groups[0].name).toBe("BKN-F01");
     expect(groups[0].id).toBe("g-bknf01");
     expect(teams).toHaveLength(2);
-    expect(students.map(s => s.name)).toEqual(["Baran", "Ivan", "Sanne"]);
+    expect(students.map(s => s.name)).toEqual(["Student Een", "Student Twee", "Student Drie"]);
     // Team 1 holds two students, team 2 holds one.
     const team1 = teams.find(t => t.teamNummer === "1")!;
     expect(students.filter(s => s.teamId === team1.id)).toHaveLength(2);
   });
 
   it("auto-detects a comma delimiter", () => {
-    const csv = "Student,Groep,Team\nNoah,BKN-F02,4";
+    const csv = "Student,Groep,Team\nSolostudent,BKN-F02,4";
     const { groups, teams, students } = parseCSV(csv);
     expect(groups).toHaveLength(1);
     expect(teams).toHaveLength(1);
-    expect(students[0].name).toBe("Noah");
+    expect(students[0].name).toBe("Solostudent");
   });
 
   it("accepts Dutch header aliases (naam / klas / teamnummer)", () => {
-    const csv = "Naam;Klas;Teamnummer\nEva;BKN-F03;7";
+    const csv = "Naam;Klas;Teamnummer\nAliasnaam;BKN-F03;7";
     const { students, groups } = parseCSV(csv);
-    expect(students[0].name).toBe("Eva");
+    expect(students[0].name).toBe("Aliasnaam");
     expect(groups[0].name).toBe("BKN-F03");
   });
 
@@ -48,7 +48,7 @@ describe("parseCSV", () => {
   });
 
   it("throws when a required column is missing", () => {
-    expect(() => parseCSV("Student;Team\nBaran;1")).toThrow();
+    expect(() => parseCSV("Student;Team\nNaam;1")).toThrow();
   });
 
   it("returns empty arrays for empty input", () => {

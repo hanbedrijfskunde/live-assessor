@@ -6,7 +6,7 @@ import StudentManager from "../../src/components/StudentManager";
 import type { Groep, Team, Student } from "../../src/types";
 
 const group: Groep = {
-  id: "g1", name: "BKN-F01", assessoren: ["Sonia", "Mark"],
+  id: "g1", name: "BKN-F01", assessoren: [],
   datum: "2026-04-07", startTime: "09:00", endTime: "13:30",
   slotDuration: 30, pauzes: ["12:00"],
 };
@@ -39,7 +39,7 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe("StudentManager — create group", () => {
-  it("normalizes the payload (uppercase name, assessoren array, defaults)", async () => {
+  it("normalizes the payload (uppercase name, empty assessoren by default, defaults)", async () => {
     const user = userEvent.setup();
     const props = renderManager({ groepen: [] });
 
@@ -51,7 +51,7 @@ describe("StudentManager — create group", () => {
       expect.objectContaining({
         id: expect.stringMatching(/^g-/),
         name: "BKN-F09",
-        assessoren: ["Sonia", "Mark"],
+        assessoren: [],
         datum: "2026-04-07",
         startTime: "09:00",
         endTime: "13:30",
@@ -77,7 +77,7 @@ describe("StudentManager — add student", () => {
     const submit = screen.getByRole("button", { name: "Voeg Student Toe" });
     expect(submit).toBeDisabled(); // group preselected, but no name/team yet
 
-    await user.type(screen.getByPlaceholderText("Bijv. Baran, Sophie"), "Noah");
+    await user.type(screen.getByPlaceholderText("Bijv. voornaam student"), "Testnaam");
     expect(submit).toBeDisabled(); // still no team
 
     const teamSelect = screen.getByRole("option", { name: "Team 1 (09:00)" }).closest("select")!;
@@ -86,7 +86,7 @@ describe("StudentManager — add student", () => {
 
     await user.click(submit);
     expect(props.onAddStudent).toHaveBeenCalledWith(
-      expect.objectContaining({ id: expect.stringMatching(/^s-/), name: "Noah", groepId: "g1", teamId: "t-1" })
+      expect.objectContaining({ id: expect.stringMatching(/^s-/), name: "Testnaam", groepId: "g1", teamId: "t-1" })
     );
   });
 });

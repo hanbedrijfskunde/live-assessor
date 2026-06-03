@@ -47,29 +47,29 @@ function getGeminiClient(): GoogleGenAI | null {
 // 3 Realistic Simulation Scenarios
 const SIMULATION_SCENARIOS: Record<string, any> = {
   scenario_a: {
-    title: "Scenario A: Baran & Ivan (Focus op Veranderen & Evalueren en Weerstand)",
+    title: "Scenario A: Student 1 & Student 2 (Focus op Veranderen & Evalueren en Weerstand)",
     transcript: [
-      { timestamp: "00:15", speaker: "Examinator", text: "Welkom Baran en Ivan bij jullie PROMEF Midterm Assessment. Laten we meteen beginnen met het eerste criterium: Veranderen en evalueren. Baran, kun jij de veranderbereidheid in jullie case toelichten met een bedrijfskundig model?" },
-      { timestamp: "00:45", speaker: "Baran", text: "Ja, klopt. We hebben geanalyseerd via Kotter's 8-stappen model. We zagen dat de 'Urgency' (stap 1) erg laag was in het team. Om dit te veranderen, hebben we eerst een coalitie gevormd met de informele leiders van de afdeling. Zo hebben we stap 2 toegepast." },
-      { timestamp: "01:25", speaker: "Examinator", text: "Heel scherp. En Ivan, hoe hebben jullie stap 3 en 4 van Kotter hierop aangesloten om de visie te communiceren?" },
-      { timestamp: "01:40", speaker: "Ivan", text: "Nou, we hebben eigenlijk geen echte visie uitgeschreven. We hebben ze gewoon verteld dat het systeem anders moet en dat ze mee moeten doen anders lopen ze achter. Maar we hebben wel geprobeerd erover te praten bij de koffieautomaat." },
-      { timestamp: "02:10", speaker: "Baran", text: "Als ik mag aanvullen, we hebben wel een communicatieplan opgesteld, maar die is door weerstand van de teamleider niet volledig uitgevoerd. De teamleider zei: 'Dit gaat ons te veel tijd kosten.' Ik heb toen voorgesteld om een pilot te draaien om te laten zien dat het juist 4 uur per week bespaart. Daarmee ging de teamleider overstag en kregen we wel draagvlak." },
-      { timestamp: "03:00", speaker: "Examinator", text: "Interessant, Baran. Dat raakt ook direct aan Schakelen en verbinden. Ivan, hoe ging jij om met de weerstand van de werkvloer?" },
-      { timestamp: "03:15", speaker: "Ivan", text: "Ik vond het vooral vervelend dat ze zo klaagden. Ik heb gezegd dat ze niet zo moeilijk moeten doen en dat het besluit al genomen is door het management. Dat hielp niet echt, ze werden alleen maar stiller." },
+      { timestamp: "00:15", speaker: "Examinator", text: "Welkom Student 1 en Student 2 bij jullie PROMEF Midterm Assessment. Laten we meteen beginnen met het eerste criterium: Veranderen en evalueren. Student 1, kun jij de veranderbereidheid in jullie case toelichten met een bedrijfskundig model?" },
+      { timestamp: "00:45", speaker: "Student 1", text: "Ja, klopt. We hebben geanalyseerd via Kotter's 8-stappen model. We zagen dat de 'Urgency' (stap 1) erg laag was in het team. Om dit te veranderen, hebben we eerst een coalitie gevormd met de informele leiders van de afdeling. Zo hebben we stap 2 toegepast." },
+      { timestamp: "01:25", speaker: "Examinator", text: "Heel scherp. En Student 2, hoe hebben jullie stap 3 en 4 van Kotter hierop aangesloten om de visie te communiceren?" },
+      { timestamp: "01:40", speaker: "Student 2", text: "Nou, we hebben eigenlijk geen echte visie uitgeschreven. We hebben ze gewoon verteld dat het systeem anders moet en dat ze mee moeten doen anders lopen ze achter. Maar we hebben wel geprobeerd erover te praten bij de koffieautomaat." },
+      { timestamp: "02:10", speaker: "Student 1", text: "Als ik mag aanvullen, we hebben wel een communicatieplan opgesteld, maar die is door weerstand van de teamleider niet volledig uitgevoerd. De teamleider zei: 'Dit gaat ons te veel tijd kosten.' Ik heb toen voorgesteld om een pilot te draaien om te laten zien dat het juist 4 uur per week bespaart. Daarmee ging de teamleider overstag en kregen we wel draagvlak." },
+      { timestamp: "03:00", speaker: "Examinator", text: "Interessant, Student 1. Dat raakt ook direct aan Schakelen en verbinden. Student 2, hoe ging jij om met de weerstand van de werkvloer?" },
+      { timestamp: "03:15", speaker: "Student 2", text: "Ik vond het vooral vervelend dat ze zo klaagden. Ik heb gezegd dat ze niet zo moeilijk moeten doen en dat het besluit al genomen is door het management. Dat hielp niet echt, ze werden alleen maar stiller." },
       { timestamp: "03:45", speaker: "Examinator", text: "Duidelijk. Laten we kijken naar een intercultureel aspect uit de case. Hoe hebben jullie rekening gehouden met de cultuurverschillen in het internationale team?" },
-      { timestamp: "04:00", speaker: "Ivan", text: "Er waren een paar Poolse medewerkers. We hebben daar niet echt speciaal rekening mee gehouden, iedereen spreekt toch gewoon Engels in het bedrijf? Dus dat leek me niet echt een probleem." },
-      { timestamp: "04:30", speaker: "Baran", text: "Nou, we merkten wel dat de Poolse collega's minder snel hun mening gaven in de grotere vergaderingen. Ik heb me verdiept in Hofstede's cultuurdimensies, en met name de machtsafstand bleek daar een rol te spelen. Daarom hebben we kleinere sub-sessies georganiseerd waar ze zich veiliger voelden om feedback te geven. Dit werkte erg goed." },
-      { timestamp: "05:15", speaker: "Examinator", text: "Uitstekend gedaan, Baran. Tot slot, een moreel dilemma: de manager vroeg jullie om de evaluatieresultaten wat rooskleuriger voor te stellen aan het Directieteam. Hoe hebben jullie gehandeld in relatie tot de OOA gedragscode?" },
-      { timestamp: "05:35", speaker: "Ivan", text: "Ja, we hebben de cijfers een beetje afgerond naar boven. De manager is tenslotte onze opdrachtgever, dus je moet hem wel te vriend houden, anders krijgen we misschien een slechte beoordeling voor ons advies." },
-      { timestamp: "06:00", speaker: "Baran", text: "Wacht, Ivan, dat hebben we uiteindelijk niet gedaan! Ik heb de OOA-gedragscode erbij gepakt, specifiek de regel over professionaliteit en onafhankelijkheid. Ik heb de manager uitgelegd dat een misleidend rapport de organisatie uiteindelijk schaadt en onze professionele integriteit aantast. We hebben toen de echte data gepresenteerd, maar wel voorzien van een constructief actieplan om de tegenvallende resultaten direct aan te pakken. De manager respecteerde dat gelukkig." }
+      { timestamp: "04:00", speaker: "Student 2", text: "Er waren een paar Poolse medewerkers. We hebben daar niet echt speciaal rekening mee gehouden, iedereen spreekt toch gewoon Engels in het bedrijf? Dus dat leek me niet echt een probleem." },
+      { timestamp: "04:30", speaker: "Student 1", text: "Nou, we merkten wel dat de Poolse collega's minder snel hun mening gaven in de grotere vergaderingen. Ik heb me verdiept in Hofstede's cultuurdimensies, en met name de machtsafstand bleek daar een rol te spelen. Daarom hebben we kleinere sub-sessies georganiseerd waar ze zich veiliger voelden om feedback te geven. Dit werkte erg goed." },
+      { timestamp: "05:15", speaker: "Examinator", text: "Uitstekend gedaan, Student 1. Tot slot, een moreel dilemma: de manager vroeg jullie om de evaluatieresultaten wat rooskleuriger voor te stellen aan het Directieteam. Hoe hebben jullie gehandeld in relatie tot de OOA gedragscode?" },
+      { timestamp: "05:35", speaker: "Student 2", text: "Ja, we hebben de cijfers een beetje afgerond naar boven. De manager is tenslotte onze opdrachtgever, dus je moet hem wel te vriend houden, anders krijgen we misschien een slechte beoordeling voor ons advies." },
+      { timestamp: "06:00", speaker: "Student 1", text: "Wacht, Student 2, dat hebben we uiteindelijk niet gedaan! Ik heb de OOA-gedragscode erbij gepakt, specifiek de regel over professionaliteit en onafhankelijkheid. Ik heb de manager uitgelegd dat een misleidend rapport de organisatie uiteindelijk schaadt en onze professionele integriteit aantast. We hebben toen de echte data gepresenteerd, maar wel voorzien van een constructief actieplan om de tegenvallende resultaten direct aan te pakken. De manager respecteerde dat gelukkig." }
     ],
     analysis: {
       scores: {
-        Baran: { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 4 },
-        Ivan: { 1: 1, 2: 2, 3: 1, 4: 2, 5: 1, 6: 1 }
+        "Student 1": { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 4 },
+        "Student 2": { 1: 1, 2: 2, 3: 1, 4: 2, 5: 1, 6: 1 }
       },
       tags: {
-        Baran: {
+        "Student 1": {
           1: ["theorie correct", "helder uitgelegd"],
           2: ["sterke interactie", "vraagt goed door"],
           3: ["weerstand omgebogen", "verbinding gemaakt"],
@@ -77,7 +77,7 @@ const SIMULATION_SCENARIOS: Record<string, any> = {
           5: ["past cultuurmodel toe", "sensitief handelen"],
           6: ["moreel kompas getoond", "conform OOA code", "stelt integriteit centraal"]
         },
-        Ivan: {
+        "Student 2": {
           1: ["concept onjuist", "niet uitgelegd"],
           2: ["redelijk verwoord", "luistert naar partner"],
           3: ["negeert weerstand", "blijft drammen"],
@@ -87,21 +87,21 @@ const SIMULATION_SCENARIOS: Record<string, any> = {
         }
       },
       reasoning: {
-        Baran: {
-          1: "Baran legt Kotters model correct en gestructureerd uit en koppelt dit direct aan stappen uit de case.",
+        "Student 1": {
+          1: "Student 1 legt Kotters model correct en gestructureerd uit en koppelt dit direct aan stappen uit de case.",
           3: "Toont uitstekend schakelen en verbinden door de weerstand van de teamleider om te buigen met een concreet voorstel voor een pilot-sessie.",
           5: "Herkent cultuurverschillen, past Hofstede theoretisch toe en past de aanpak succesvol aan.",
           6: "Demonstreert een sterk moreel kompas door de OOA-code te hanteren en stand te houden tegenover onethische verzoeken van de manager."
         },
-        Ivan: {
-          1: "Ivan toont geen theoretische kennis en bagatelliseert het gebrek aan een gedeelde visie.",
+        "Student 2": {
+          1: "Student 2 toont geen theoretische kennis en bagatelliseert het gebrek aan een gedeelde visie.",
           3: "Zorgt voor escalatie van weerstand door medewerkers te vertellen dat ze niet moeten zeuren.",
           5: "Toont geen intercultureel bewustzijn en bagatelliseert de Poolse cultuurverschillen.",
           6: "Is bereid om data te manipuleren uit opportunisme, wat in directe strijd is met de OOA-gedragscode."
         }
       },
       feedback: {
-        Baran: {
+        "Student 1": {
           strengths: [
             "Sterke integratie van theorie (Kotter, Hofstede, OOA) in de praktijkervaring.",
             "Uitzonderlijk professioneel optreden bij integriteitskwesties (moreel kompas).",
@@ -111,7 +111,7 @@ const SIMULATION_SCENARIOS: Record<string, any> = {
             "Blijf je duo-partner stimuleren om actiever deel te nemen aan de theoretische reflectie tijdens het gesprek."
           ]
         },
-        Ivan: {
+        "Student 2": {
           strengths: [
             "Praat makkelijk en is vriendelijk in de omgang.",
             "Stelt zich open op en deelt eerlijk hoe hij heeft gehandeld."
@@ -126,24 +126,24 @@ const SIMULATION_SCENARIOS: Record<string, any> = {
     }
   },
   scenario_b: {
-    title: "Scenario B: Sanne & Luuk (Focus op Communicatie en Samenwerking)",
+    title: "Scenario B: Student 1 & Student 2 (Focus op Communicatie en Samenwerking)",
     transcript: [
-      { timestamp: "00:20", speaker: "Examinator", text: "Laten we beginnen, Sanne en Luuk. Sanne, hoe hebben jullie de projectplanning en stakeholdermanagement aangepakt?" },
-      { timestamp: "00:50", speaker: "Sanne", text: "We zijn gestart met een stakeholdersanalyse. We hebben de macht-interesse matrix getekend om de belangrijkste spelers te mappen. Luuk was verantwoordelijk voor de interviews met de Directie en ik deed de afdelingshoofden." },
-      { timestamp: "01:15", speaker: "Luuk", text: "Ja, klopt. De corporate cultuur is daar vrij formeel. Ik vond de interviews met de directieleden best intimiderend. Ik merkte dat ik heel erg vasthield aan mijn vragenlijst, waardoor ik niet echt doorvroeg op moeilijke onderwerpen. Maar Sanne gaf me daarna feedback om opener vragen te stellen, en bij de volgende interviews ging dat al direct een stuk beter!" },
-      { timestamp: "01:50", speaker: "Examinator", text: "Heel mooie reflectie, Luuk. Dat laat groei zien op Professionaliseren en Sociaal-communicatieve vaardigheden. Sanne, hoe reageerde jij op de feedback die je van Luuk of de organisatie kreeg?" },
-      { timestamp: "02:10", speaker: "Sanne", text: "Ik kreeg van een van de afdelingshoofden te horen dat mijn adviestoon in het begin te dwingend overkwam. Ze zeiden: 'Je bent pas student, kom ons niet vertellen hoe we ons werk moeten doen.' Ik schrok daarvan, maar ik heb direct een vervolggesprek aangevraagd waarin ik m'n excuses heb aangeboden en heb gevraagd hoe we het samen konden inkleden. Dat toonde m'n bereidheid om te leren." },
+      { timestamp: "00:20", speaker: "Examinator", text: "Laten we beginnen, Student 1 en Student 2. Student 1, hoe hebben jullie de projectplanning en stakeholdermanagement aangepakt?" },
+      { timestamp: "00:50", speaker: "Student 1", text: "We zijn gestart met een stakeholdersanalyse. We hebben de macht-interesse matrix getekend om de belangrijkste spelers te mappen. Student 2 was verantwoordelijk voor de interviews met de Directie en ik deed de afdelingshoofden." },
+      { timestamp: "01:15", speaker: "Student 2", text: "Ja, klopt. De corporate cultuur is daar vrij formeel. Ik vond de interviews met de directieleden best intimiderend. Ik merkte dat ik heel erg vasthield aan mijn vragenlijst, waardoor ik niet echt doorvroeg op moeilijke onderwerpen. Maar Student 1 gaf me daarna feedback om opener vragen te stellen, en bij de volgende interviews ging dat al direct een stuk beter!" },
+      { timestamp: "01:50", speaker: "Examinator", text: "Heel mooie reflectie, Student 2. Dat laat groei zien op Professionaliseren en Sociaal-communicatieve vaardigheden. Student 1, hoe reageerde jij op de feedback die je van Student 2 of de organisatie kreeg?" },
+      { timestamp: "02:10", speaker: "Student 1", text: "Ik kreeg van een van de afdelingshoofden te horen dat mijn adviestoon in het begin te dwingend overkwam. Ze zeiden: 'Je bent pas student, kom ons niet vertellen hoe we ons werk moeten doen.' Ik schrok daarvan, maar ik heb direct een vervolggesprek aangevraagd waarin ik m'n excuses heb aangeboden en heb gevraagd hoe we het samen konden inkleden. Dat toonde m'n bereidheid om te leren." },
       { timestamp: "02:45", speaker: "Examinator", text: "Mooi. Hoe hebben jullie het morele dilemma aangepakt rondom de geheimhouding van het inkrimping-advies?" },
-      { timestamp: "03:00", speaker: "Sanne", text: "Dat was heel lastig. Een bevriende teamleider vroeg mij of er banen gingen verdwijnen. Ik wist dat dit zo was, maar we hadden getekend voor geheimhouding. Ik heb hem gezegd dat ik de details van het lopende onderzoek niet kon delen, maar hem wel verwezen naar de formele communicatiekanalen van de directie. Zo bleef ik integer." },
-      { timestamp: "03:30", speaker: "Luuk", text: "Ik vond dat ook heel moeilijk. Ik heb m'n mond wel per ongeluk een beetje voorbij gepraat tegen een collega. Achteraf voelde ik me heel schuldig. Ik ben toen meteen naar de senior consultant gegaan om te melden wat ik had gezegd, zodat ze eventuele schade konden beperken. Dat was pijnlijk, maar wel de meest integere weg." }
+      { timestamp: "03:00", speaker: "Student 1", text: "Dat was heel lastig. Een bevriende teamleider vroeg mij of er banen gingen verdwijnen. Ik wist dat dit zo was, maar we hadden getekend voor geheimhouding. Ik heb hem gezegd dat ik de details van het lopende onderzoek niet kon delen, maar hem wel verwezen naar de formele communicatiekanalen van de directie. Zo bleef ik integer." },
+      { timestamp: "03:30", speaker: "Student 2", text: "Ik vond dat ook heel moeilijk. Ik heb m'n mond wel per ongeluk een beetje voorbij gepraat tegen een collega. Achteraf voelde ik me heel schuldig. Ik ben toen meteen naar de senior consultant gegaan om te melden wat ik had gezegd, zodat ze eventuele schade konden beperken. Dat was pijnlijk, maar wel de meest integere weg." }
     ],
     analysis: {
       scores: {
-        Sanne: { 1: 2, 2: 3, 3: 3, 4: 3, 5: 2, 6: 3 },
-        Luuk: { 1: 2, 2: 2, 3: 2, 4: 3, 5: 2, 6: 3 }
+        "Student 1": { 1: 2, 2: 3, 3: 3, 4: 3, 5: 2, 6: 3 },
+        "Student 2": { 1: 2, 2: 2, 3: 2, 4: 3, 5: 2, 6: 3 }
       },
       tags: {
-        Sanne: {
+        "Student 1": {
           1: ["concept benoemd", "basisuitleg"],
           2: ["sterke interactie", "professionele toon"],
           3: ["verbinding gemaakt", "weerstand omgebogen"],
@@ -151,7 +151,7 @@ const SIMULATION_SCENARIOS: Record<string, any> = {
           5: ["herkent cultuurfactor", "respectvolle houding"],
           6: ["analyseert moreel aspect", "integer onder druk"]
         },
-        Luuk: {
+        "Student 2": {
           1: ["concept benoemd", "basisuitleg"],
           2: ["actief luisterend", "vriendelijk"],
           3: ["erkent weerstand", "zoekt een compromis"],
@@ -161,18 +161,18 @@ const SIMULATION_SCENARIOS: Record<string, any> = {
         }
       },
       reasoning: {
-        Sanne: {
-          2: "Sanne formuleert helder, toont een uitstekende professionele toon en herstelt een stroef stakeholderscontact zeer volwassen.",
+        "Student 1": {
+          2: "Student 1 formuleert helder, toont een uitstekende professionele toon en herstelt een stroef stakeholderscontact zeer volwassen.",
           4: "Reflecteert diep op kritische feedback uit de organisatie en past haar gedrag proactief aan.",
           6: "Houdt zich strikt aan de geheimhouding ondanks persoonlijke druk."
         },
-        Luuk: {
+        "Student 2": {
           4: "Toont enorme groei door fouten in interviewtechniek direct te corrigeren na feedback.",
           6: "Neemt volledige verantwoordelijkheid voor een gemaakte fout en meldt dit direct bij de leidinggevende om schade te voorkomen. Zeer integer."
         }
       },
       feedback: {
-        Sanne: {
+        "Student 1": {
           strengths: [
             "Hoge professionele weerbaarheid en sterke communicatieve vaardigheden.",
             "Uitstekende ombuiging van persoonlijke adviesweerstand bij een stakeholder."
@@ -181,7 +181,7 @@ const SIMULATION_SCENARIOS: Record<string, any> = {
             "Probeer theoretische concepten nog iets explicieter te onderbouwen (bijv. specifiekere modellen voor stakeholder engagement)."
           ]
         },
-        Luuk: {
+        "Student 2": {
           strengths: [
             "Grote kwetsbaarheid en oprechte leerhouding.",
             "Kiest voor integriteit en transparantie, zelfs als dat persoonlijk nadelig is."
@@ -194,23 +194,23 @@ const SIMULATION_SCENARIOS: Record<string, any> = {
     }
   },
   scenario_c: {
-    title: "Scenario C: Kevin & Sophie (Excellente prestaties op alle vlakken)",
+    title: "Scenario C: Student 1 & Student 2 (Excellente prestaties op alle vlakken)",
     transcript: [
-      { timestamp: "00:10", speaker: "Examinator", text: "Hallo Kevin en Sophie. Laten we van start gaan met jullie presentatie en de onderbouwing van jullie verander- en evaluatiestrategie." },
-      { timestamp: "00:30", speaker: "Sophie", text: "Dank u. We hebben voor de verandering van het ERP-systeem de ADKAR-methodiek gehanteert. We zagen dat de 'Awareness' en 'Desire' erg laag waren door slechte eerdere ervaringen. Om dit te evalueren hebben we een nulmeting gedaan via een kwantitatieve enquête, gecombineerd met kwalitatieve focusgroepen om de diepere pijnpunten te begrijpen." },
-      { timestamp: "01:20", speaker: "Kevin", text: "Aanvullend hebben we de theorie van Lewin over 'Unfreezing, Changing, Refreezing' gebruikt om de transitiefases te structureren. We hebben aangetoond dat de weerstand niet onwil was, maar angst voor verlies van competentie. Door gerichte trainingen aan te bieden, hebben we de 'Desire' en 'Ability' binnen ADKAR tegelijk gestimuleerd." },
+      { timestamp: "00:10", speaker: "Examinator", text: "Hallo Student 1 en Student 2. Laten we van start gaan met jullie presentatie en de onderbouwing van jullie verander- en evaluatiestrategie." },
+      { timestamp: "00:30", speaker: "Student 2", text: "Dank u. We hebben voor de verandering van het ERP-systeem de ADKAR-methodiek gehanteert. We zagen dat de 'Awareness' en 'Desire' erg laag waren door slechte eerdere ervaringen. Om dit te evalueren hebben we een nulmeting gedaan via een kwantitatieve enquête, gecombineerd met kwalitatieve focusgroepen om de diepere pijnpunten te begrijpen." },
+      { timestamp: "01:20", speaker: "Student 1", text: "Aanvullend hebben we de theorie van Lewin over 'Unfreezing, Changing, Refreezing' gebruikt om de transitiefases te structureren. We hebben aangetoond dat de weerstand niet onwil was, maar angst voor verlies van competentie. Door gerichte trainingen aan te bieden, hebben we de 'Desire' en 'Ability' binnen ADKAR tegelijk gestimuleerd." },
       { timestamp: "02:00", speaker: "Examinator", text: "Dit getuigt van een zeer diepe en correcte integratie van meerdere theorieën! En hoe hebben jullie de weerstand van het operationeel management opgelost?" },
-      { timestamp: "02:20", speaker: "Sophie", text: "We zijn een dag gaan meelopen op de werkvloer om hun dagelijkse realiteit te begrijpen. We merkten dat de weerstand voortkwam uit de angst dat de nieuwe software hun administratieve last zou verhogen. Door hen te betrekken bij de co-creatie van de interface-sjablonen, hebben we hun weerstand omgezet in actieve betrokkenheid en eigenaarschap. De teamleiders zijn nu ambassadeurs van het project geworden." },
-      { timestamp: "03:10", speaker: "Kevin", text: "Tijdens dit meelopen stuitten we op een intercultureel issue. De helpdesk is deels uitbesteed aan een team in India. Er was veel onbegrip over de communicatiestijl: de Nederlandse collega's vonden de Indiase reacties vaag, terwijl de Indiase collega's de Nederlandse directheid als beledigend ervoeren. We hebben Hofstede's dimensie 'Individualisme vs Collectivisme' en de 'Low vs High Context' communicatie van Erin Meyer toegepast om workshops te geven voor beide teams. Dit heeft de ticketsnelheid met 35% verbeterd." },
+      { timestamp: "02:20", speaker: "Student 2", text: "We zijn een dag gaan meelopen op de werkvloer om hun dagelijkse realiteit te begrijpen. We merkten dat de weerstand voortkwam uit de angst dat de nieuwe software hun administratieve last zou verhogen. Door hen te betrekken bij de co-creatie van de interface-sjablonen, hebben we hun weerstand omgezet in actieve betrokkenheid en eigenaarschap. De teamleiders zijn nu ambassadeurs van het project geworden." },
+      { timestamp: "03:10", speaker: "Student 1", text: "Tijdens dit meelopen stuitten we op een intercultureel issue. De helpdesk is deels uitbesteed aan een team in India. Er was veel onbegrip over de communicatiestijl: de Nederlandse collega's vonden de Indiase reacties vaag, terwijl de Indiase collega's de Nederlandse directheid als beledigend ervoeren. We hebben Hofstede's dimensie 'Individualisme vs Collectivisme' en de 'Low vs High Context' communicatie van Erin Meyer toegepast om workshops te geven voor beide teams. Dit heeft de ticketsnelheid met 35% verbeterd." },
       { timestamp: "04:15", speaker: "Examinator", text: "Fantastisch resultaat. Dit is een buitengewoon hoogwaardige en professionele aanpak!" }
     ],
     analysis: {
       scores: {
-        Kevin: { 1: 4, 2: 4, 3: 4, 4: 4, 5: 4, 6: 3 },
-        Sophie: { 1: 4, 2: 4, 3: 4, 4: 4, 5: 4, 6: 3 }
+        "Student 1": { 1: 4, 2: 4, 3: 4, 4: 4, 5: 4, 6: 3 },
+        "Student 2": { 1: 4, 2: 4, 3: 4, 4: 4, 5: 4, 6: 3 }
       },
       tags: {
-        Kevin: {
+        "Student 1": {
           1: ["diepgaande analyse", "concepten verbonden"],
           2: ["leidt het gesprek", "vloeiende argumentatie"],
           3: ["synergie gecreëerd", "verbinding gemaakt", "weerstand omgebogen"],
@@ -218,7 +218,7 @@ const SIMULATION_SCENARIOS: Record<string, any> = {
           5: ["diep cultureel inzicht", "cultuur specifieke synergie"],
           6: ["analyseert moreel aspect"]
         },
-        Sophie: {
+        "Student 2": {
           1: ["diepgaande analyse", "concepten verbonden", "eigenstandige toepassing"],
           2: ["leidt het gesprek", "vloeiende argumentatie"],
           3: ["synergie gecreëerd", "verbinding gemaakt", "weerstand omgebogen"],
@@ -228,19 +228,19 @@ const SIMULATION_SCENARIOS: Record<string, any> = {
         }
       },
       reasoning: {
-        Kevin: {
-          1: "Kevin verbindt ADKAR vloeiend met Lewin en bewijst diepe bedrijfskundige theoriebeheersing.",
+        "Student 1": {
+          1: "Student 1 verbindt ADKAR vloeiend met Lewin en bewijst diepe bedrijfskundige theoriebeheersing.",
           3: "Toont uitstekende samenwerking en creëert actieve synergie uit weerstand door co-creatie.",
           5: "Past Erin Meyer en Hofstede op indrukwekkende en effectieve wijze toe om een reële bedrijfsknelpunt op te lossen."
         },
-        Sophie: {
-          1: "Sophie past ADKAR-methode zeer professioneel toe, startend met een gedegen nulmeting.",
-          3: "Sophie toont uitmuntende verbinding door haar inlevend meelopen op de werkvloer.",
+        "Student 2": {
+          1: "Student 2 past ADKAR-methode zeer professioneel toe, startend met een gedegen nulmeting.",
+          3: "Student 2 toont uitmuntende verbinding door haar inlevend meelopen op de werkvloer.",
           5: "Ontwikkelt concrete, cultuursensitieve synergie die de operationele prestaties met 35% verhoogt."
         }
       },
       feedback: {
-        Kevin: {
+        "Student 1": {
           strengths: [
             "Indrukwekkende integratie en synthese van complexe theorieën.",
             "Zeer volwassen, strategische blik op consultancy en verandervraagstukken.",
@@ -250,7 +250,7 @@ const SIMULATION_SCENARIOS: Record<string, any> = {
             "Blijf deze hoge standaard vasthouden in je verdere professionele loopbaan."
           ]
         },
-        Sophie: {
+        "Student 2": {
           strengths: [
             "Uitstekend empirisch onderzoek (meeloop-methode) gebruikt als basis voor verandering.",
             "Sterk leiderschap en proactiviteit getoond om de helpdesk-integratie vlot te trekken.",

@@ -18,6 +18,46 @@ Dit bestand is het tegenhanger-artefact van `BLUEPRINT.html`:
 
 ---
 
+## v1.5 — 2026-06-03 · Persoonsnamen uit de code; demo via CSV
+
+Studentvoornamen (17), docent/assessor-namen (Sonia, Mark, Jan) en volledige beoordelingsnotities
+mét namen stonden hard in de broncode (`src/utils.ts` seed + `app.ts` AI-fallback). Ook als "mock"
+hoort persoonsdata niet in source/git. Alle namen zijn nu uit de code; de demo-roster verhuisde naar
+een los databestand dat als demo wordt ingelezen.
+
+### Verbeteringen
+
+- **Demo-roster naar `public/demo.csv`** (nieuw): `Student;Groep;Team`. "Laad Voorbeeldset" haalt het
+  op met `fetch` en parseert het via de bestaande `parseCSV` → verse, *ongescoorde* cohort. `Baran`
+  vervangen door **Emre** (op verzoek een andere Turkse naam).
+- **`src/utils.ts`:** `INITIAL_GROEPEN/TEAMS/STUDENTEN/ASSESSMENTS` (incl. naam-bevattende notities)
+  verwijderd; `parseCSV`-default `assessoren` → `[]` (was `["Sonia","Mark"]`). Ongebruikte imports
+  (`CRITERIA`, `TeamAssessment`) opgeschoond.
+- **`src/App.tsx`:** load-on-mount valt terug op lege `[]`/`{}` (geen code-seed) → verse app start
+  leeg; `handleLoadExampleData` is nu async en laadt `/demo.csv` via `handleImportData`.
+- **`app.ts`:** de drie AI-fallback-scenario's gebruiken neutrale placeholders `Student 1`/`Student 2`
+  (keys nu gequote) i.p.v. echte namen; de runtime-remap vult alsnog de echte namen in.
+- **UI/teksten:** DataManager-knop async + foutafhandeling, voorbeeld-CSV-preview en
+  StudentManager-placeholders/defaults naamloos; `types.ts`-comment-voorbeeld geneutraliseerd.
+- **Tests/e2e:** CSV-unittests, component- en integratiefixtures naamloos; de integratietest seedt nu
+  zelf een mini-fixture in `localStorage` (geen auto-seed meer); de e2e laadt eerst de demo en gebruikt
+  de parser-afgeleide team-id `t-g-bknf02-4`. Alles groen (48 unit/component/integration/api + 2 e2e).
+
+### Lessen
+
+- Een demo die *roster + scores* toont past niet in één CSV: `parseCSV` draagt alleen de roster, en
+  CSV-gegenereerde id's (`t-<groepId>-<nr>`) lijnen niet uit met losse, voorgescoorde assessments.
+  Keuze: roster-only demo, voorgescoorde `INITIAL_ASSESSMENTS` vervalt.
+- Naamtokens met een spatie (`Student 1`) zijn geen geldige *unquoted* objectsleutels. Bij het
+  genericeren van `app.ts` moesten de shorthand-keys eerst gequote worden (`"Student 1":`) vóór de
+  globale vervanging — anders breekt de syntax.
+- Auto-seed weghalen breekt elke test die op mount-data leunde. Tests die data nodig hebben moeten die
+  expliciet zelf zetten (localStorage-fixture) i.p.v. op een impliciete code-seed te vertrouwen.
+  → Geleerde conventie: geen echte persoonsnamen in broncode/fixtures; demo-roster in `public/demo.csv`,
+  lege `assessoren`-defaults, AI-fallback met `Student 1`/`Student 2`, verse app start leeg.
+
+---
+
 ## v1.4 — 2026-06-03 · Blueprint: legacy/retrofit-framing weggesneden
 
 De blueprint droeg twee identiteiten door elkaar: een *bouwspec* (hoe bouw je de app) én een

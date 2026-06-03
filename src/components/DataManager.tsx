@@ -10,7 +10,7 @@ interface DataManagerProps {
   assessments: Record<string, TeamAssessment>;
   onImportData: (groups: Groep[], teams: Team[], students: Student[]) => void;
   onRestoreBackup: (backupData: any) => void;
-  onLoadExampleData: () => void;
+  onLoadExampleData: () => Promise<void>;
   onResetAllData: () => void;
 }
 
@@ -123,8 +123,8 @@ export default function DataManager({
           <div className="bg-slate-50 border border-slate-200 p-3 rounded-lg text-[11px] text-slate-650 font-mono scale-95 origin-left">
             <div><strong>Bestandsopbouw vereisten (Kolomkoppen):</strong></div>
             <div className="mt-1 text-slate-500">Student | Groep | Team</div>
-            <div className="text-slate-400">Baran; BKN-F01; 1</div>
-            <div className="text-slate-400">Ivan; BKN-F01; 1</div>
+            <div className="text-slate-400">Voornaam; BKN-F01; 1</div>
+            <div className="text-slate-400">Voornaam; BKN-F01; 1</div>
           </div>
 
           <div className="pt-2">
@@ -191,13 +191,17 @@ export default function DataManager({
             <div>
               <h5 className="font-bold text-indigo-900 text-xs">Voorbeelddata Inladen</h5>
               <p className="text-[11px] text-slate-550 mt-1">
-                Laad direct de standaard democohorten van de HAN bedrijfskunde (met 3 reeds geëvalueerde demoteams) om het dashboard, de cijferstaat en de feedbackrapporten direct uit te proberen.
+                Laad de standaard democohorten van de HAN bedrijfskunde uit <code>demo.csv</code> (alleen de namenlijst — nog niet beoordeeld) om de kalender, het scoreformulier en de import-flow direct uit te proberen.
               </p>
             </div>
             <button
-              onClick={() => {
-                onLoadExampleData();
-                alert("Standaard Bedrijfskunde voorbeelddata is succesvol geladen!");
+              onClick={async () => {
+                try {
+                  await onLoadExampleData();
+                  alert("Standaard Bedrijfskunde voorbeelddata is succesvol geladen!");
+                } catch (err) {
+                  alert(`Kon de voorbeelddata niet laden: ${err instanceof Error ? err.message : err}`);
+                }
               }}
               className="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs py-1.5 px-3 rounded transition-colors self-start cursor-pointer"
             >

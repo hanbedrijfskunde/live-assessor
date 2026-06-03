@@ -29,7 +29,7 @@ export default function StudentManager({
   // Add Group states
   const [newGroup, setNewGroup] = useState({
     name: "",
-    assessoren: "Sonia, Mark",
+    assessoren: "",
     datum: "2026-04-07",
     startTime: "09:00",
     endTime: "13:30",
@@ -121,10 +121,11 @@ export default function StudentManager({
 
             <div>
               <label className="block font-semibold text-slate-600 mb-1">Assessoren (komma gescheiden)</label>
-              <input 
-                type="text" 
-                value={newGroup.assessoren} 
+              <input
+                type="text"
+                value={newGroup.assessoren}
                 onChange={(e) => setNewGroup({ ...newGroup, assessoren: e.target.value })}
+                placeholder="Bijv. assessor 1, assessor 2"
                 className="w-full px-3 py-2 border border-slate-200 rounded-md outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 font-medium"
               />
             </div>
@@ -248,7 +249,7 @@ export default function StudentManager({
                 type="text" 
                 value={studentNameStr} 
                 onChange={(e) => setStudentNameStr(e.target.value)}
-                placeholder="Bijv. Baran, Sophie"
+                placeholder="Bijv. voornaam student"
                 className="w-full px-3 py-2 border border-slate-200 rounded-md outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 font-medium"
               />
             </div>

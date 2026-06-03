@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Groep, Team, Student, TeamAssessment } from "./types";
-import { 
-  loadFromLocalStorage, 
-  saveToLocalStorage, 
-  INITIAL_GROEPEN, 
-  INITIAL_TEAMS, 
-  INITIAL_STUDENTEN, 
-  INITIAL_ASSESSMENTS,
+import {
+  loadFromLocalStorage,
+  saveToLocalStorage,
+  parseCSV,
   generateTimeSlots,
   timeToMinutes,
   minutesToTime
@@ -36,10 +33,12 @@ export default function App() {
 
   // Load database on mount
   useEffect(() => {
-    const loadedGroepen = loadFromLocalStorage<Groep[]>("promef_groepen", INITIAL_GROEPEN);
-    const loadedTeams = loadFromLocalStorage<Team[]>("promef_teams", INITIAL_TEAMS);
-    const loadedStudenten = loadFromLocalStorage<Student[]>("promef_studenten", INITIAL_STUDENTEN);
-    const loadedAssessments = loadFromLocalStorage<Record<string, TeamAssessment>>("promef_assessments", INITIAL_ASSESSMENTS);
+    // Fresh browsers start empty; the demo roster is loaded on demand from
+    // public/demo.csv via "Laad Voorbeeldset" (see handleLoadExampleData).
+    const loadedGroepen = loadFromLocalStorage<Groep[]>("promef_groepen", []);
+    const loadedTeams = loadFromLocalStorage<Team[]>("promef_teams", []);
+    const loadedStudenten = loadFromLocalStorage<Student[]>("promef_studenten", []);
+    const loadedAssessments = loadFromLocalStorage<Record<string, TeamAssessment>>("promef_assessments", {});
 
     setGroepen(loadedGroepen);
     setTeams(loadedTeams);
@@ -224,11 +223,15 @@ export default function App() {
     updateAndSaveAssessments(backup.assessments || {});
   };
 
-  const handleLoadExampleData = () => {
-    updateAndSaveGroepen(INITIAL_GROEPEN);
-    updateAndSaveTeams(INITIAL_TEAMS);
-    updateAndSaveStudenten(INITIAL_STUDENTEN);
-    updateAndSaveAssessments(INITIAL_ASSESSMENTS);
+  // Demo roster lives in public/demo.csv (no real names in source). Fetch it,
+  // parse with the same CSV pipeline as a manual import, and load it as a fresh
+  // (unscored) cohort. Throws on failure so the caller can surface an error.
+  const handleLoadExampleData = async () => {
+    const res = await fetch("/demo.csv");
+    if (!res.ok) throw new Error(`Kon demo.csv niet laden (${res.status})`);
+    const text = await res.text();
+    const { groups, teams: tList, students: sList } = parseCSV(text);
+    handleImportData(groups, tList, sList);
   };
 
   const handleResetAllData = () => {

@@ -1,7 +1,7 @@
 export interface Groep {
   id: string;
   name: string; // e.g., BKN-F01, BKN-F02
-  assessoren: string[]; // e.g., ["Sonia", "Mark"]
+  assessoren: string[]; // e.g., ["Assessor 1", "Assessor 2"]
   datum: string; // YYYY-MM-DD
   startTime: string; // HH:MM
   endTime: string; // HH:MM

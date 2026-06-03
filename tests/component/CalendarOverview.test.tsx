@@ -6,7 +6,7 @@ import CalendarOverview from "../../src/components/CalendarOverview";
 import type { Groep, Team, Student, TeamAssessment } from "../../src/types";
 
 const g = (over: Partial<Groep> = {}): Groep => ({
-  id: "g1", name: "BKN-F01", assessoren: ["Sonia", "Mark"],
+  id: "g1", name: "BKN-F01", assessoren: [],
   datum: "2026-04-07", startTime: "09:00", endTime: "10:30",
   slotDuration: 30, pauzes: [], ...over,
 });
