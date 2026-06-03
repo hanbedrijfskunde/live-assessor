@@ -18,6 +18,32 @@ Dit bestand is het tegenhanger-artefact van `BLUEPRINT.html`:
 
 ---
 
+## v1.3 — 2026-06-03 · Blueprint: het API-key-moment expliciet gemaakt
+
+De blueprint beschreef *dat* er een `GEMINI_API_KEY` is en *waar* die als bestand staat, maar nergens
+*wanneer* de developer hem moet invoeren. Een lezer kon daardoor niet uit de blueprint afleiden of de
+sleutel een verplichte opstartstap was of optioneel.
+
+### Verbeteringen
+
+- **A8 (API):** een alinea "Wanneer & waar de sleutel invoeren" toegevoegd — de key is optioneel
+  (zonder = fallback), en voor echte Gemini-analyse kopieer je `.env.example` → `.env` en vul je hem
+  in *vóór* `npm run dev`/`npm start`. `dotenv` leest `.env` alleen bij opstart, dus na invullen moet
+  de dev-server herstarten. Expliciet vermeld dat er geen UI-veld is; de sleutel hoort server-side.
+- **Bestandsboom:** `.env` en `.env.example` als twee aparte regels — `.env.example` (in git, sjabloon)
+  vs. `.env` (gitignored, ingevulde kopie) — i.p.v. één dubbelzinnige regel.
+
+### Lessen
+
+- "Waar staat config" en "wanneer voer je config in" zijn twee verschillende vragen; de blueprint
+  beantwoordde alleen de eerste. Bij optionele config met een graceful fallback is er geen hard
+  faal-moment dat de developer naar de instructie dwingt, dus moet het moment expliciet beschreven
+  staan, anders ontdekt niemand het.
+  → Geleerde conventie: documenteer voor optionele config naast het bestaan ook het moment (vóór
+  opstart, herstart nodig) en de plek (server-side `.env`, geen UI-veld).
+
+---
+
 ## v1.2 — 2026-06-03 · F5 (scoringskern) onder test
 
 De kern van de applicatie — het beoordelingsformulier — onder test gebracht, met de eerste

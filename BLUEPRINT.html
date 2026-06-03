@@ -72,7 +72,7 @@
 <header class="title">
   <div>
     <span class="tag">BLAUWDRUK</span>
-    <span class="tag">v1.2</span>
+    <span class="tag">v1.3</span>
     <span class="tag">build-ready</span>
     <span class="tag" style="background:#ecfdf5;color:#047857">F0–F5 gerealiseerd</span>
   </div>
@@ -268,7 +268,8 @@ Gemini uitsluitend server-side aanroept. (<code>/api/simulate-analysis</code> be
 ├─ server.ts                   # import app + Vite/static wiring + app.listen(3000)
 ├─ BLUEPRINT.html              # deze blauwdruk (single source of truth — bij elke wijziging bijwerken)
 ├─ CLAUDE.md                   # agent-instructies (incl. blueprint-sync-regel)
-├─ .env / .env.example         # GEMINI_API_KEY
+├─ .env.example                # sjabloon met GEMINI_API_KEY (in git)
+├─ .env                         # gitignored — kopie van .env.example met ingevulde sleutel
 ├─ tests/
 │  ├─ unit/                    # Vitest: grading + utils (time/csv/storage/date)
 │  └─ api/                     # Supertest tegen app.ts (Gemini gemockt)
@@ -567,6 +568,12 @@ of <code>404</code>. <span class="small">De client gebruikt dit niet meer (simul
 naar <code>student1Name/student2Name</code>). Mét sleutel → Gemini <code>generateContent</code> met
 <code>responseSchema</code> (objectsleutels exact gelijk aan de aangeleverde studentnamen; 1 student bij solo),
 <code>temperature 0.2</code>, Nederlandstalige systeeminstructie.</p>
+<p><strong>Wanneer &amp; waar de sleutel invoeren:</strong> de key is <em>optioneel</em> — de app en tests draaien
+zonder, dan grijpt de fallback hierboven. Wil je <em>echte</em> Gemini-analyse, dan kopieer je
+<code>.env.example</code> naar <code>.env</code> (gitignored) en vul je <code>GEMINI_API_KEY=…</code> in
+<strong>vóór</strong> je <code>npm run dev</code> / <code>npm start</code> draait. <code>dotenv</code> leest
+<code>.env</code> alleen bij het opstarten van <code>server.ts</code>, dus na het invullen moet je de dev-server
+herstarten. Er is geen UI-veld voor de sleutel; hij hoort uitsluitend server-side in <code>.env</code> thuis.</p>
 
 <div class="diagram-label">📋 Mermaid-broncode (voor AI)</div>
 <pre><code>sequenceDiagram
@@ -622,6 +629,7 @@ naar <code>student1Name/student2Name</code>). Mét sleutel → Gemini <code>gene
   <li><code>localStorage</code> in tests: in-memory <code>Storage</code>-stub i.p.v. jsdom; voor <code>App</code>-integratie ook <code>confirm</code>/<code>alert</code> stubben.</li>
   <li>Namen als "BKN-F01" komen in een view vaak meervoudig voor (kaart + <code>&lt;option&gt;</code>s); query op een uniek anker (bv. <code>getAllByTitle("Verwijder groep")</code>-telling) i.p.v. <code>getByText</code>.</li>
   <li>Een label dat zowel kop (<code>&lt;span&gt;</code>) als knop is (bv. niveau "Op"/"Boven"): query met <code>getByRole("button", …)</code>. Bij identieke controls over meerdere kaarten (duo): <code>getAllByRole(...)</code> + positie-index (kaartvolgorde).</li>
+  <li>Voor optionele config (bv. <code>GEMINI_API_KEY</code>): documenteer niet alleen het <em>bestaan</em>, maar ook het <em>moment</em> (vóór <code>npm run dev</code>, server herstarten) en de <em>plek</em> (server-side in <code>.env</code>, geen UI-veld).</li>
 </ul></div>
 
 <!-- GITFLOW -->
