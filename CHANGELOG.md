@@ -18,6 +18,39 @@ Dit bestand is het tegenhanger-artefact van `BLUEPRINT.html`:
 
 ---
 
+## v1.4 — 2026-06-03 · Blueprint: legacy/retrofit-framing weggesneden
+
+De blueprint droeg twee identiteiten door elkaar: een *bouwspec* (hoe bouw je de app) én een
+*retrofit-test-tracker* (wat bestond al, welke tests zijn toegevoegd). De tweede is geschiedenis en
+hoort hier in de changelog, niet in de present-tense reference. Een lezer die de laatste versie wil
+bouwen had niets aan "component bestond al" of "TOEGEVOEGD IN F0".
+
+### Verbeteringen
+
+- **Deel A ontdaan van fase-/retrofit-tags:** koppen "package.json scripts" en "Test-dependencies"
+  verloren hun `✅ AANWEZIG (F0)` / `✅ TOEGEVOEGD IN F0`-pills; de zin "stonden niet in de originele
+  app …" is weg; "Testbaarheid (gerealiseerd in F0)" → present-tense "Testbaarheid"; "Bestandsstructuur
+  (doel)" → "Bestandsstructuur"; "Geleerde conventies (gerealiseerd)" → "Geleerde conventies".
+- **Dead reference hersteld:** de bestandsboom miste `tests/component/` en `tests/integration/` terwijl
+  beide bestaan en in de fase-kaarten worden genoemd — nu toegevoegd.
+- **Deel B Status-regels opgeschoond:** de `✅ GEREALISEERD`-pills blijven (toegestane status-markering),
+  maar de retrofit-prozá ("Component bestond al", "tests toegevoegd", "geen functionele wijziging nodig",
+  "N tests groen") is verwijderd. De drie herbruikbare NB-testtips (F2: echte views + stubs; F3: select
+  zonder label via optie; F4: jsdom drag-&-drop via `fireEvent.drop`) blijven behouden als present-tense
+  **Testnotitie**.
+
+### Lessen
+
+- "Markeer een gerealiseerde fase met een status-regel" (CLAUDE.md) is niet hetzelfde als "plak de
+  hele retrofit-historie in de fase-kaart". De *pill* markeert; de *prozá* moet present-tense bouwkennis
+  blijven, niet een dagboek van wat-al-bestond. Onderscheid bij het opschonen scherp tussen een
+  herbruikbare testtip (blijft) en een voltooiingsverslag (gaat naar de changelog).
+- Reference-secties kunnen stil verouderen op detailniveau: de bestandsboom liep achter op de echte
+  testmappen. Bij het schrappen van legacy ook actief checken of de reference de *huidige* werkelijkheid
+  nog volledig dekt, niet alleen of er niets te véél staat.
+
+---
+
 ## v1.3 — 2026-06-03 · Blueprint: het API-key-moment expliciet gemaakt
 
 De blueprint beschreef *dat* er een `GEMINI_API_KEY` is en *waar* die als bestand staat, maar nergens

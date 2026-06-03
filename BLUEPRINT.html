@@ -72,7 +72,7 @@
 <header class="title">
   <div>
     <span class="tag">BLAUWDRUK</span>
-    <span class="tag">v1.3</span>
+    <span class="tag">v1.4</span>
     <span class="tag">build-ready</span>
     <span class="tag" style="background:#ecfdf5;color:#047857">F0–F5 gerealiseerd</span>
   </div>
@@ -150,7 +150,7 @@ browser (`localStorage`); import/export verloopt via CSV en JSON.</p>
   <tr><td>Prod-bundle</td><td>esbuild</td><td>^0.25.0</td><td>server → `dist/server.cjs`</td></tr>
 </table>
 
-<h4><code>package.json</code> scripts <span class="pill" style="background:#ecfdf5;color:#047857">✅ AANWEZIG (F0)</span></h4>
+<h4><code>package.json</code> scripts</h4>
 <pre><code>{
   "type": "module",
   "scripts": {
@@ -167,8 +167,8 @@ browser (`localStorage`); import/export verloopt via CSV en JSON.</p>
   }
 }</code></pre>
 
-<h4>Test-dependencies <span class="pill" style="background:#ecfdf5;color:#047857">✅ TOEGEVOEGD IN F0</span></h4>
-<p class="small">Deze stonden niet in de originele app en zijn in F0 als dev-dependencies geïnstalleerd.</p>
+<h4>Test-dependencies</h4>
+<p class="small">Dev-dependencies voor de testpiramide (zie A9).</p>
 <table>
 <tr><th>Pakket</th><th>Rol</th></tr>
 <tr><td><code>vitest</code>, <code>@vitest/coverage-v8</code></td><td>unit / component / integratie runner + coverage</td></tr>
@@ -177,9 +177,9 @@ browser (`localStorage`); import/export verloopt via CSV en JSON.</p>
 <tr><td><code>supertest</code>, <code>@types/supertest</code></td><td>API-tests tegen Express</td></tr>
 <tr><td><code>@playwright/test</code></td><td>E2E + smoke</td></tr>
 </table>
-<div class="note"><strong>Testbaarheid (gerealiseerd in F0):</strong> <code>server.ts</code> is gesplitst in
+<div class="note"><strong>Testbaarheid:</strong> de backend is opgesplitst in
 <code>app.ts</code> (exporteert de Express <code>app</code> zonder <code>listen</code>) en <code>server.ts</code>
-(importeert <code>app</code> + Vite/static-wiring + <code>listen</code>). Supertest test <code>app</code> direct.
+(importeert <code>app</code> + Vite/static-wiring + <code>listen</code>), zodat Supertest <code>app</code> direct test.
 De Gemini-client is injecteerbaar via <code>setGeminiClientForTesting</code> / <code>resetGeminiClientForTesting</code>,
 zodat hij in tests gemockt of op <code>null</code> (fallback-pad) gezet kan worden.</div>
 
@@ -256,7 +256,7 @@ Gemini uitsluitend server-side aanroept. (<code>/api/simulate-analysis</code> be
   App -. "utils.ts" .-> U["loadFromLocalStorage / saveToLocalStorage / parseCSV / time helpers"]
   App -. "types.ts" .-> T["interfaces + CRITERIA + getCijferFromScore"]</div>
 
-<h4>Bestandsstructuur (doel)</h4>
+<h4>Bestandsstructuur</h4>
 <pre><code>.
 ├─ index.html                  # mount-point #root, laadt /src/main.tsx
 ├─ vite.config.ts              # plugins: react(), tailwindcss(); alias @ -> .
@@ -272,6 +272,8 @@ Gemini uitsluitend server-side aanroept. (<code>/api/simulate-analysis</code> be
 ├─ .env                         # gitignored — kopie van .env.example met ingevulde sleutel
 ├─ tests/
 │  ├─ unit/                    # Vitest: grading + utils (time/csv/storage/date)
+│  ├─ component/               # Vitest + RTL: losse view-componenten
+│  ├─ integration/             # Vitest + RTL: App + view + localStorage
 │  └─ api/                     # Supertest tegen app.ts (Gemini gemockt)
 ├─ e2e/                        # Playwright (smoke + e2e-reizen)
 └─ src/
@@ -621,7 +623,7 @@ herstarten. Er is geen UI-veld voor de sleutel; hij hoort uitsluitend server-sid
 <div class="gate"><strong>Definition of Done per fase:</strong> (1) alle subtaken af · (2) alle nieuwe tests groen ·
 (3) <code>npm run lint</code> (tsc) schoon · (4) regressie groen · (5) commit gemaakt (push optioneel) ·
 (6) <code>BLUEPRINT.html</code> bijgewerkt naar de actuele staat.</div>
-<div class="note"><strong>Geleerde conventies (gerealiseerd):</strong>
+<div class="note"><strong>Geleerde conventies:</strong>
 <span style="display:block;margin:2px 0 6px;font-style:italic">Kale, nog-geldende regels — de gedateerde context en het "waarom" staan per versie in <code>CHANGELOG.md</code>.</span>
 <ul style="margin:6px 0 0">
   <li>API-tests draaien in Node via een per-bestand docblock <code>// @vitest-environment node</code> — Vitest 4 verwijderde <code>environmentMatchGlobs</code>.</li>
@@ -791,7 +793,6 @@ voor welke fasen/tracks veilig gelijktijdig kunnen en welke gedeelde bestanden j
 <!-- F0 -->
 <div class="card phase" id="f0">
 <h3>F0 · Projectsetup &amp; tooling <span class="pill" style="background:#ecfdf5;color:#047857">✅ GEREALISEERD</span></h3>
-<p class="small"><strong>Status:</strong> gedaan. <code>server.ts</code> gesplitst in <code>app.ts</code> (testbaar, injecteerbare Gemini-client via <code>setGeminiClientForTesting</code>) + <code>server.ts</code> (Vite/static + listen). Vitest + Playwright opgezet; smoke groen; <code>npm run build</code> bundelt frontend + <code>dist/server.cjs</code>.</p>
 <p><strong>Doel:</strong> draaiend skelet — lege React-app via Vite + Express, met test-harnas geconfigureerd.</p>
 <h4>Subtaken</h4>
 <ul class="checks">
@@ -813,8 +814,8 @@ voor welke fasen/tracks veilig gelijktijdig kunnen en welke gedeelde bestanden j
 <!-- F1 -->
 <div class="card phase" id="f1">
 <h3>F1 · Domeinmodel &amp; pure utilities <span class="pill" style="background:#ecfdf5;color:#047857">✅ GEREALISEERD</span></h3>
-<p class="small"><strong>Status:</strong> domeinlaag onder test (25 tests groen). <code>types.ts</code> en <code>utils.ts</code> bestonden al; tests toegevoegd voor grading, tijd-helpers, <code>parseCSV</code>, localStorage en datum. Resterende dekking op <code>utils.ts</code> = <code>downloadBackup/downloadCSV</code> (browser-download) — gepland in F8/F10.</p>
 <p><strong>Doel:</strong> alle types, constanten en zijeffect-vrije functies — het hart van de business-logica, volledig getest.</p>
+<p class="small"><strong>Testnotitie:</strong> de browser-download-helpers (<code>downloadBackup</code>/<code>downloadCSV</code>) worden via F8/F10 gedekt, niet hier.</p>
 <h4>Subtaken</h4>
 <ul class="checks">
   <li><code>src/types.ts</code>: interfaces, <code>LevelType</code>, <code>LEVEL_SCORES</code>, <code>LEVEL_COLORS</code>, <code>LEVEL_BADGES</code>, de 6 <code>CRITERIA</code> (zie A4), <code>getCijferFromScore</code>.</li>
@@ -835,8 +836,8 @@ voor welke fasen/tracks veilig gelijktijdig kunnen en welke gedeelde bestanden j
 <!-- F2 -->
 <div class="card phase" id="f2">
 <h3>F2 · Persistentielaag &amp; app-shell <span class="pill" style="background:#ecfdf5;color:#047857">✅ GEREALISEERD</span></h3>
-<p class="small"><strong>Status:</strong> integratietests op <code>App</code> toegevoegd (<code>tests/integration/app.test.tsx</code>): load-on-mount toont seed-data, tabnavigatie, cascade-delete van een groep (incl. teams/studenten/assessments in localStorage), en persistentie over een remount. <code>App.tsx</code> bestond al; geen functionele wijziging nodig. NB: render de echte views (geen placeholders) en stub <code>localStorage</code>/<code>confirm</code>/<code>alert</code>.</p>
 <p><strong>Doel:</strong> <code>App.tsx</code> met centrale state, load-on-mount, save-helpers en tabnavigatie.</p>
+<p class="small"><strong>Testnotitie:</strong> integratie op <code>App</code> (<code>tests/integration/app.test.tsx</code>) — render de echte views (geen placeholders) en stub <code>localStorage</code>/<code>confirm</code>/<code>alert</code>.</p>
 <h4>Subtaken</h4>
 <ul class="checks">
   <li>State: <code>groepen/teams/studenten/assessments</code> + <code>activeView/activeTeamId/activeStudentFeedbackId</code>.</li>
@@ -858,8 +859,8 @@ voor welke fasen/tracks veilig gelijktijdig kunnen en welke gedeelde bestanden j
 <!-- F3 -->
 <div class="card phase" id="f3">
 <h3>F3 · Studentbeheer (StudentManager) <span class="pill" style="background:#ecfdf5;color:#047857">✅ GEREALISEERD</span></h3>
-<p class="small"><strong>Status:</strong> component-tests toegevoegd (<code>tests/component/StudentManager.test.tsx</code>): genormaliseerde groep-payload (uppercase naam, assessoren-array, defaults), blanco naam blokkeert submit, student-submit disabled tot naam+team gekozen, bulk-teams emit (groupId, count), en verwijder-groep mét/zónder bevestiging. Component bestond al. NB: selects in dit component hebben geen gekoppeld label — query via een optie (<code>getByRole("option", …).closest("select")</code>).</p>
 <p><strong>Doel:</strong> groepen/teams/studenten aanmaken &amp; verwijderen via UI.</p>
+<p class="small"><strong>Testnotitie:</strong> selects in dit component hebben geen gekoppeld label — query via een optie (<code>getByRole("option", …).closest("select")</code>).</p>
 <h4>Subtaken</h4>
 <ul class="checks">
   <li>Formulier groep (naam upper-case, assessoren split op komma, default pauze 12:00).</li>
@@ -879,8 +880,8 @@ voor welke fasen/tracks veilig gelijktijdig kunnen en welke gedeelde bestanden j
 <!-- F4 -->
 <div class="card phase" id="f4">
 <h3>F4 · Kalenderoverzicht (CalendarOverview) <span class="pill" style="background:#ecfdf5;color:#047857">✅ GEREALISEERD</span></h3>
-<p class="small"><strong>Status:</strong> component-tests toegevoegd (<code>tests/component/CalendarOverview.test.tsx</code>): statusbadge-mapping (Onbeoordeeld/Deels/Voltooid), klik-naar-assessment, pauze toevoegen (lege slot) en verwijderen (✕), en drag-&amp;-drop binnen vs. buiten een groep. Component bestond al. NB: drag-&amp;-drop test je in jsdom met <code>fireEvent.drop(row, { dataTransfer })</code> — de handler leest <code>getData("text/plain")</code>, dus een stub volstaat (geen echte dragStart nodig).</p>
 <p><strong>Doel:</strong> roosterweergave met statistieken, statusbadges, pauzes en drag-&amp;-drop.</p>
+<p class="small"><strong>Testnotitie:</strong> drag-&amp;-drop test je in jsdom met <code>fireEvent.drop(row, { dataTransfer })</code> — de handler leest <code>getData("text/plain")</code>, dus een stub volstaat (geen echte dragStart nodig).</p>
 <h4>Subtaken</h4>
 <ul class="checks">
   <li>Statistiektegels (voltooid/totaal + balk; partial; totalen).</li>
@@ -900,7 +901,6 @@ voor welke fasen/tracks veilig gelijktijdig kunnen en welke gedeelde bestanden j
 <!-- F5 -->
 <div class="card phase" id="f5">
 <h3>F5 · Assessment-werkblad (AssessmentView) — kernscoring <span class="pill" style="background:#ecfdf5;color:#047857">✅ GEREALISEERD</span></h3>
-<p class="small"><strong>Status:</strong> component-tests toegevoegd (<code>tests/component/AssessmentView.test.tsx</code>): score zetten → status partial, alle 6 → completed, score wissen → terug naar partial, duo-score-replicatie + read-only slave, observatie-tag toggle (✓-regel), en per-student reset (incl. disabled-bij-leeg). Plus de eerste E2E-deelreis (<code>e2e/assessment.spec.ts</code>): open team → scoor 6 criteria → kaart wordt "Voltooid". Component bestond al.</p>
 <p><strong>Doel:</strong> het beoordelingshart: niveaus, tags, notities, duo-sync, reset, auto-save + statusberekening.</p>
 <h4>Subtaken</h4>
 <ul class="checks">
