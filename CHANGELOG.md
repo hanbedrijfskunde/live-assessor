@@ -18,6 +18,31 @@ Dit bestand is het tegenhanger-artefact van `BLUEPRINT.html`:
 
 ---
 
+## v1.6 — 2026-06-03 · F6 (AI-simulatie) onder test
+
+De client-side AI-simulatie (`buildSimulation`) is de motor achter de drie scoreprofiel-knoppen.
+Die logica is nu rechtstreeks getest, plus de afspeel- en apply-bedrading van het paneel.
+
+### Verbeteringen
+
+- **F6 — AiNotulistPanel:** `buildSimulation` geëxporteerd en met unittests gedekt
+  (`tests/unit/buildSimulation.test.ts`): patroon→score (`onvoldoende`=1, `uitstekend`=4,
+  `random`∈{2,3,4}), keying op de echte teamnamen (solo én trio), het aantal transcript-regels en
+  competentie-detecties, en gevulde tags/reasoning/feedback per student.
+- **Apply-bedrading** (`tests/component/AiNotulistPanel.test.tsx`): de drie knoppen tonen de
+  teamnaam; een `onvoldoende`-run speelt af en "Gebruik AI Suggesties" levert all-Onder-scores aan
+  `onApplySuggestions`.
+
+### Lessen
+
+- De simulatie speelt het transcript regel-voor-regel af via `setInterval`; de apply-knop verschijnt
+  pas ná de laatste tick. Een gewone klik-test ziet die knop dus nooit.
+  → Geleerde conventie: test timer-gestuurde UI met `vi.useFakeTimers()` +
+  `act(() => vi.advanceTimersByTime(...))`, en gebruik `fireEvent` (niet `userEvent`) zolang nep-timers
+  actief zijn.
+
+---
+
 ## v1.5 — 2026-06-03 · Persoonsnamen uit de code; demo via CSV
 
 Studentvoornamen (17), docent/assessor-namen (Sonia, Mark, Jan) en volledige beoordelingsnotities

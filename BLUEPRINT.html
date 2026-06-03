@@ -72,9 +72,9 @@
 <header class="title">
   <div>
     <span class="tag">BLAUWDRUK</span>
-    <span class="tag">v1.5</span>
+    <span class="tag">v1.6</span>
     <span class="tag">build-ready</span>
-    <span class="tag" style="background:#ecfdf5;color:#047857">F0–F5 gerealiseerd</span>
+    <span class="tag" style="background:#ecfdf5;color:#047857">F0–F6 gerealiseerd</span>
   </div>
   <h1>PROMEF Assessment Tool &amp; AI Notulist</h1>
   <p><strong>Doel van dit document:</strong> een complete, op zichzelf staande bouwspecificatie. Een software engineer
@@ -639,6 +639,7 @@ herstarten. Er is geen UI-veld voor de sleutel; hij hoort uitsluitend server-sid
   <li>Een label dat zowel kop (<code>&lt;span&gt;</code>) als knop is (bv. niveau "Op"/"Boven"): query met <code>getByRole("button", …)</code>. Bij identieke controls over meerdere kaarten (duo): <code>getAllByRole(...)</code> + positie-index (kaartvolgorde).</li>
   <li>Voor optionele config (bv. <code>GEMINI_API_KEY</code>): documenteer niet alleen het <em>bestaan</em>, maar ook het <em>moment</em> (vóór <code>npm run dev</code>, server herstarten) en de <em>plek</em> (server-side in <code>.env</code>, geen UI-veld).</li>
   <li>Geen echte persoonsnamen (studenten of docenten) in de broncode of testfixtures. De demo-roster leeft in <code>public/demo.csv</code> en wordt via <code>parseCSV</code> geladen; defaults voor <code>assessoren</code> zijn leeg; AI-fallback-scenario's gebruiken <code>Student 1</code>/<code>Student 2</code>. Een verse app start leeg.</li>
+  <li>Timer-gestuurde UI (de <code>setInterval</code>-playback van de simulatie): test met <code>vi.useFakeTimers()</code> + <code>act(() =&gt; vi.advanceTimersByTime(...))</code>; gebruik <code>fireEvent</code> (niet <code>userEvent</code>) zolang nep-timers actief zijn.</li>
 </ul></div>
 
 <!-- GITFLOW -->
@@ -933,7 +934,8 @@ voor welke fasen/tracks veilig gelijktijdig kunnen en welke gedeelde bestanden j
 
 <!-- F6 -->
 <div class="card phase" id="f6">
-<h3>F6 · AI co-pilot — client-side simulatie (AiNotulistPanel)</h3>
+<h3>F6 · AI co-pilot — client-side simulatie (AiNotulistPanel) <span class="pill" style="background:#ecfdf5;color:#047857">✅ GEREALISEERD</span></h3>
+<p class="small"><strong>Testnotitie:</strong> <code>buildSimulation(students, pattern)</code> is geëxporteerd voor unittests (<code>tests/unit/buildSimulation.test.ts</code>): patroon→score (onvoldoende=1, uitstekend=4, random∈{2,3,4}), keying op echte namen (solo &amp; trio), regel- en detectie-aantallen, en gevulde tags/reasoning/feedback. De afspeel- + apply-bedrading test je in jsdom met <code>vi.useFakeTimers()</code> + <code>act(() =&gt; vi.advanceTimersByTime(...))</code> om de <code>setInterval</code>-playback te doorlopen tot de "Gebruik AI Suggesties"-knop verschijnt (<code>tests/component/AiNotulistPanel.test.tsx</code>).</p>
 <p><strong>Doel:</strong> dynamische simulaties op basis van de echte teamleden + scoreprofiel; suggesties toepasbaar op het formulier.</p>
 <h4>Subtaken</h4>
 <ul class="checks">

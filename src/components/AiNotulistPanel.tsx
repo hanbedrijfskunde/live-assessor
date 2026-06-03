@@ -5,9 +5,9 @@ import { LevelType, CRITERIA, LEVEL_SCORES, Criterium } from "../types";
 // A simulation is built around whatever students are actually in the team,
 // not hard-coded names. The teacher picks a score profile (pattern) and we
 // synthesise a believable Dutch transcript + matching analysis on the client.
-type SimPattern = "onvoldoende" | "random" | "uitstekend";
+export type SimPattern = "onvoldoende" | "random" | "uitstekend";
 
-interface SimStudent {
+export interface SimStudent {
   id: string;
   name: string;
 }
@@ -74,7 +74,7 @@ function joinNames(names: string[]): string {
 
 // Build a complete, self-contained simulation (transcript + analysis) for the
 // current team and chosen score profile. No server round-trip required.
-function buildSimulation(students: SimStudent[], pattern: SimPattern): BuiltSimulation {
+export function buildSimulation(students: SimStudent[], pattern: SimPattern): BuiltSimulation {
   const names = students.map(s => s.name);
   const transcript: BuiltSimulation["transcript"] = [];
   const detections: BuiltSimulation["detections"] = [];
