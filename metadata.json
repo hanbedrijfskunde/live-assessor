@@ -1,0 +1,6 @@
+{
+  "name": "PROMEF Assessment Tool & AI Notulist",
+  "description": "Beoordelingsinstrument voor PROMEF assessmentgesprekken met automatische competentiebepaling en realtime feedbacksuggesties via de AI Notulist.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

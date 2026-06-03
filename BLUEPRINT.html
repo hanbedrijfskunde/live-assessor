@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Blauwdruk — PROMEF Assessment Tool &amp; AI Notulist</title>
+<style>
+  :root{
+    --ink:#1e293b; --muted:#64748b; --line:#e2e8f0; --bg:#ffffff; --soft:#f8fafc;
+    --accent:#4f46e5; --accent-soft:#eef2ff; --ok:#059669; --warn:#d97706; --bad:#dc2626;
+    --code-bg:#0f172a; --code-ink:#e2e8f0;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--soft); color:var(--ink);
+    font-family:"Inter",ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    line-height:1.6; font-size:16px;
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding:48px 24px 120px}
+  header.title{border-bottom:3px solid var(--ink); padding-bottom:24px; margin-bottom:8px}
+  header.title h1{font-size:32px; margin:0 0 6px; letter-spacing:-.5px}
+  header.title p{margin:4px 0; color:var(--muted)}
+  .tag{display:inline-block; background:var(--accent-soft); color:var(--accent);
+    font-size:12px; font-weight:700; padding:3px 10px; border-radius:999px; margin-right:6px; letter-spacing:.3px}
+  h2{font-size:24px; margin:56px 0 12px; padding-top:12px; border-top:1px solid var(--line); letter-spacing:-.3px}
+  h3{font-size:19px; margin:32px 0 8px}
+  h4{font-size:15px; margin:20px 0 6px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted)}
+  p,li{font-size:15.5px}
+  a{color:var(--accent); text-decoration:none}
+  a:hover{text-decoration:underline}
+  code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13.5px}
+  p code,li code,td code{background:#eef2ff; color:#3730a3; padding:1px 6px; border-radius:5px; font-size:13px}
+  pre{background:var(--code-bg); color:var(--code-ink); border-radius:10px; padding:16px 18px;
+    overflow:auto; font-size:13px; line-height:1.55; margin:10px 0}
+  pre code{color:inherit; font-size:13px}
+  table{border-collapse:collapse; width:100%; margin:14px 0; font-size:14px; background:var(--bg)}
+  th,td{border:1px solid var(--line); padding:8px 11px; text-align:left; vertical-align:top}
+  th{background:var(--soft); font-size:12px; text-transform:uppercase; letter-spacing:.5px; color:var(--muted)}
+  .card{background:var(--bg); border:1px solid var(--line); border-radius:14px; padding:20px 24px; margin:18px 0;
+    box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .phase{border-left:5px solid var(--accent); }
+  .phase h3{margin-top:0}
+  .pill{display:inline-block; font-size:11px; font-weight:700; padding:2px 9px; border-radius:999px; letter-spacing:.4px}
+  .pill.unit{background:#ecfdf5; color:#047857}
+  .pill.api{background:#eff6ff; color:#1d4ed8}
+  .pill.int{background:#fef3c7; color:#92400e}
+  .pill.e2e{background:#fae8ff; color:#a21caf}
+  .pill.smoke{background:#f1f5f9; color:#334155}
+  .pill.reg{background:#fee2e2; color:#b91c1c}
+  .pill.commit{background:#1e293b; color:#fff}
+  ul.checks{list-style:none; padding-left:4px}
+  ul.checks li{position:relative; padding-left:30px; margin:6px 0}
+  ul.checks li::before{content:"☐"; position:absolute; left:2px; top:-1px; font-size:17px; color:var(--accent)}
+  .gate{background:var(--soft); border:1px dashed var(--line); border-radius:10px; padding:12px 16px; margin:12px 0; font-size:14px}
+  .gate strong{color:var(--ink)}
+  .diagram-label{font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin:18px 0 4px}
+  .mermaid{background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:18px; margin:6px 0 4px; text-align:center}
+  .toc{columns:2; column-gap:36px; font-size:14px}
+  .toc a{display:block; padding:3px 0}
+  .note{background:#fffbeb; border:1px solid #fde68a; border-radius:10px; padding:12px 16px; font-size:14px; margin:14px 0}
+  .danger{background:#fef2f2; border:1px solid #fecaca; border-radius:10px; padding:12px 16px; font-size:14px; margin:14px 0}
+  .legend span{margin-right:14px; font-size:13px}
+  hr{border:none; border-top:1px solid var(--line); margin:40px 0}
+  .small{font-size:13px; color:var(--muted)}
+  @media (max-width:640px){ .toc{columns:1} .wrap{padding:28px 16px 80px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="title">
+  <div>
+    <span class="tag">BLAUWDRUK</span>
+    <span class="tag">v1.0</span>
+    <span class="tag">build-ready</span>
+  </div>
+  <h1>PROMEF Assessment Tool &amp; AI Notulist</h1>
+  <p><strong>Doel van dit document:</strong> een complete, op zichzelf staande bouwspecificatie. Een software engineer
+  moet hiermee de volledige applicatie kunnen bouwen — zonder aanvullende instructies of documentatie.</p>
+  <p class="small">Leeswijze: lees eerst Deel A (wat & hoe). Bouw daarna strikt volgens Deel B (fasen). Elke fase eindigt
+  met een testset en een commit-gate. Diagrammen staan dubbel: als Mermaid-broncode (voor AI) én gerenderd (voor mensen).</p>
+</header>
+
+<div class="card">
+  <h4 style="margin-top:0">Inhoud</h4>
+  <nav class="toc">
+    <a href="#overzicht">A1. Productoverzicht</a>
+    <a href="#stack">A2. Techstack &amp; dependencies</a>
+    <a href="#architectuur">A3. Architectuur</a>
+    <a href="#datamodel">A4. Datamodel</a>
+    <a href="#domein">A5. Domeinregels (scoring)</a>
+    <a href="#persistentie">A6. Persistentie &amp; state</a>
+    <a href="#views">A7. Schermen (functioneel)</a>
+    <a href="#api">A8. Server-API</a>
+    <a href="#teststrategie">A9. Teststrategie</a>
+    <a href="#gitflow">A10. Git-workflow</a>
+    <a href="#fasen">B. Bouwplan in fasen</a>
+    <a href="#f0">F0 · Setup</a>
+    <a href="#f1">F1 · Domein &amp; utils</a>
+    <a href="#f2">F2 · Persistentie &amp; shell</a>
+    <a href="#f3">F3 · Studentbeheer</a>
+    <a href="#f4">F4 · Kalender</a>
+    <a href="#f5">F5 · Assessment</a>
+    <a href="#f6">F6 · AI-simulatie</a>
+    <a href="#f7">F7 · Server &amp; Gemini</a>
+    <a href="#f8">F8 · Resultaten</a>
+    <a href="#f9">F9 · Feedbackrapport</a>
+    <a href="#f10">F10 · Databeheer</a>
+    <a href="#f11">F11 · E2E &amp; release</a>
+  </nav>
+</div>
+
+<!-- =================== DEEL A =================== -->
+<h2 id="overzicht">A1 · Productoverzicht</h2>
+<p>Een Nederlandstalige webapplicatie waarmee docenten van <strong>HAN Bedrijfskunde</strong> het <strong>PROMEF
+Midterm Assessment</strong> afnemen en beoordelen. Studenten worden in teams (solo, duo of meer) ingeroosterd op een
+kalender en beoordeeld op <strong>6 vaste criteria</strong>, elk op <strong>4 niveaus</strong>. Een AI co-pilot kan
+gesprekken simuleren of geüploade audio analyseren (via Gemini) om scores en feedback voor te stellen. De docent ziet
+resultaten in een matrix (cijfer + slaag/zak) en genereert printbare feedbackrapporten. Alle data leeft lokaal in de
+browser (`localStorage`); import/export verloopt via CSV en JSON.</p>
+
+<h4>Kernfunctionaliteit (must-have)</h4>
+<ul>
+  <li>Klassen/groepen, teams en studenten beheren (handmatig + CSV-import).</li>
+  <li>Kalenderoverzicht met tijdsloten, pauzes en drag-&amp;-drop herinroostering binnen een groep.</li>
+  <li>Assessmentformulier: per student per criterium een niveau + observatie-tags + vrije notities; duo-score-synchronisatie; per-student reset.</li>
+  <li>AI co-pilot: client-side simulaties (3 scoreprofielen) én Gemini-analyse van audio/transcript.</li>
+  <li>Resultatenmatrix met punten, cijfer en slaag/zak; CSV-export.</li>
+  <li>Printbaar feedbackrapport per student (PDF via browser-print).</li>
+  <li>JSON back-up/herstel en volledige reset.</li>
+</ul>
+
+<h2 id="stack">A2 · Techstack &amp; dependencies</h2>
+<table>
+  <tr><th>Laag</th><th>Keuze</th><th>Versie</th><th>Reden</th></tr>
+  <tr><td>UI-runtime</td><td>React + ReactDOM</td><td>^19.0.1</td><td>SPA, StrictMode</td></tr>
+  <tr><td>Taal</td><td>TypeScript</td><td>~5.8.2</td><td>strict types, `noEmit`</td></tr>
+  <tr><td>Bundler/dev</td><td>Vite</td><td>^6.2.3</td><td>HMR, build</td></tr>
+  <tr><td>Styling</td><td>Tailwind CSS via <code>@tailwindcss/vite</code></td><td>^4.1.14</td><td>utility-first, geen aparte config nodig</td></tr>
+  <tr><td>Iconen</td><td>lucide-react</td><td>^0.546.0</td><td>consistente icon-set</td></tr>
+  <tr><td>Animatie</td><td>motion</td><td>^12.23.24</td><td>subtiele transities (optioneel)</td></tr>
+  <tr><td>Backend</td><td>Express</td><td>^4.21.2</td><td>API + serveren build</td></tr>
+  <tr><td>AI</td><td>@google/genai</td><td>^2.4.0</td><td>Gemini structured output</td></tr>
+  <tr><td>Config</td><td>dotenv</td><td>^17.2.3</td><td>`GEMINI_API_KEY`</td></tr>
+  <tr><td>Dev-server</td><td>tsx</td><td>^4.21.0</td><td>`tsx server.ts`</td></tr>
+  <tr><td>Prod-bundle</td><td>esbuild</td><td>^0.25.0</td><td>server → `dist/server.cjs`</td></tr>
+</table>
+
+<h4>Te bouwen <code>package.json</code> scripts</h4>
+<pre><code>{
+  "type": "module",
+  "scripts": {
+    "dev":   "tsx server.ts",                 // Express + Vite middleware op poort 3000
+    "build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+    "start": "node dist/server.cjs",          // productie (NODE_ENV=production serveert dist/)
+    "lint":  "tsc --noEmit",
+    "test":  "vitest run",
+    "test:watch": "vitest",
+    "test:cov":  "vitest run --coverage",
+    "test:api":  "vitest run tests/api",
+    "e2e":   "playwright test",
+    "e2e:smoke": "playwright test --grep @smoke"
+  }
+}</code></pre>
+
+<h4>Toe te voegen test-dependencies (niet in originele app aanwezig)</h4>
+<table>
+<tr><th>Pakket</th><th>Rol</th></tr>
+<tr><td><code>vitest</code>, <code>@vitest/coverage-v8</code></td><td>unit / component / integratie runner + coverage</td></tr>
+<tr><td><code>@testing-library/react</code>, <code>@testing-library/user-event</code>, <code>@testing-library/jest-dom</code></td><td>component-tests</td></tr>
+<tr><td><code>jsdom</code></td><td>DOM voor Vitest</td></tr>
+<tr><td><code>supertest</code></td><td>API-tests tegen Express</td></tr>
+<tr><td><code>@playwright/test</code></td><td>E2E + smoke</td></tr>
+</table>
+<div class="note"><strong>Belangrijk voor testbaarheid:</strong> splits <code>server.ts</code> in <code>app.ts</code>
+(exporteert de Express <code>app</code> zonder <code>listen</code>) en <code>server.ts</code> (importeert app + <code>listen</code>).
+Supertest test dan <code>app</code> direct. Maak de Gemini-client injecteerbaar zodat hij in tests gemockt kan worden.</div>
+
+<!-- ARCHITECTUUR -->
+<h2 id="architectuur">A3 · Architectuur</h2>
+<p>Eén Express-proces serveert in development de React-app via Vite-middleware en biedt twee API-endpoints. In productie
+serveert hetzelfde proces de statische <code>dist/</code>-build. De frontend is een SPA met centrale state in <code>App</code>
+en persistentie in <code>localStorage</code>. Gemini wordt uitsluitend server-side aangeroepen.</p>
+
+<div class="diagram-label">📋 Mermaid-broncode (voor AI)</div>
+<pre><code>flowchart LR
+  subgraph Browser["Browser (SPA)"]
+    UI["React UI · App + 6 views"]
+    LS[("localStorage<br/>promef_*")]
+    UI <--> LS
+  end
+  subgraph Node["Node-proces (Express)"]
+    API["Express API"]
+    VITE["Vite middleware (dev)<br/>static dist (prod)"]
+  end
+  GEM["Google Gemini API"]
+  UI -- "GET / (html, assets)" --> VITE
+  UI -- "POST /api/simulate-analysis" --> API
+  UI -- "POST /api/analyze-assessment" --> API
+  API -- "audio/transcript + schema" --> GEM
+  GEM -- "structured JSON" --> API</code></pre>
+<div class="diagram-label">🖼 Gerenderd (voor mensen)</div>
+<div class="mermaid">flowchart LR
+  subgraph Browser["Browser (SPA)"]
+    UI["React UI · App + 6 views"]
+    LS[("localStorage<br/>promef_*")]
+    UI <--> LS
+  end
+  subgraph Node["Node-proces (Express)"]
+    API["Express API"]
+    VITE["Vite middleware (dev)<br/>static dist (prod)"]
+  end
+  GEM["Google Gemini API"]
+  UI -- "GET / (html, assets)" --> VITE
+  UI -- "POST /api/simulate-analysis" --> API
+  UI -- "POST /api/analyze-assessment" --> API
+  API -- "audio/transcript + schema" --> GEM
+  GEM -- "structured JSON" --> API</div>
+
+<h3>Componentenboom</h3>
+<div class="diagram-label">📋 Mermaid-broncode (voor AI)</div>
+<pre><code>flowchart TD
+  main["main.tsx · createRoot + StrictMode"] --> App
+  App["App.tsx · state: groepen/teams/studenten/assessments + activeView"]
+  App --> Cal["CalendarOverview"]
+  App --> Asm["AssessmentView"]
+  App --> Res["ResultsView"]
+  App --> Fb["FeedbackView"]
+  App --> Stu["StudentManager"]
+  App --> Dm["DataManager"]
+  Asm --> Ai["AiNotulistPanel"]
+  App -. "utils.ts" .-> U["loadFromLocalStorage / saveToLocalStorage / parseCSV / time helpers"]
+  App -. "types.ts" .-> T["interfaces + CRITERIA + getCijferFromScore"]</code></pre>
+<div class="diagram-label">🖼 Gerenderd (voor mensen)</div>
+<div class="mermaid">flowchart TD
+  main["main.tsx · createRoot + StrictMode"] --> App
+  App["App.tsx · state: groepen/teams/studenten/assessments + activeView"]
+  App --> Cal["CalendarOverview"]
+  App --> Asm["AssessmentView"]
+  App --> Res["ResultsView"]
+  App --> Fb["FeedbackView"]
+  App --> Stu["StudentManager"]
+  App --> Dm["DataManager"]
+  Asm --> Ai["AiNotulistPanel"]
+  App -. "utils.ts" .-> U["loadFromLocalStorage / saveToLocalStorage / parseCSV / time helpers"]
+  App -. "types.ts" .-> T["interfaces + CRITERIA + getCijferFromScore"]</div>
+
+<h4>Bestandsstructuur (doel)</h4>
+<pre><code>.
+├─ index.html                  # mount-point #root, laadt /src/main.tsx
+├─ vite.config.ts              # plugins: react(), tailwindcss(); alias @ -> .
+├─ tsconfig.json               # target ES2022, jsx react-jsx, moduleResolution bundler, noEmit
+├─ app.ts                      # Express app (geen listen) — testbaar
+├─ server.ts                   # import app + app.listen(3000) + Vite/static wiring
+├─ .env / .env.example         # GEMINI_API_KEY
+└─ src/
+   ├─ main.tsx                 # entry
+   ├─ index.css                # @import tailwindcss; fonts Inter/JetBrains; print-CSS
+   ├─ types.ts                 # domeintypes + CRITERIA + LEVEL_* + getCijferFromScore
+   ├─ utils.ts                 # seed-data + localStorage + CSV + tijd-helpers
+   └─ components/
+      ├─ CalendarOverview.tsx
+      ├─ AssessmentView.tsx
+      ├─ AiNotulistPanel.tsx
+      ├─ ResultsView.tsx
+      ├─ FeedbackView.tsx
+      ├─ StudentManager.tsx
+      └─ DataManager.tsx</code></pre>
+
+<!-- DATAMODEL -->
+<h2 id="datamodel">A4 · Datamodel</h2>
+<div class="diagram-label">📋 Mermaid-broncode (voor AI)</div>
+<pre><code>erDiagram
+  GROEP ||--o{ TEAM : "bevat"
+  TEAM  ||--o{ STUDENT : "bevat"
+  TEAM  ||--o| TEAMASSESSMENT : "heeft (key=teamId)"
+  TEAMASSESSMENT ||--o{ STUDENTASSESSMENT : "studentAssessments[studentId]"
+  GROEP {
+    string id PK
+    string name
+    string[] assessoren
+    string datum "YYYY-MM-DD"
+    string startTime "HH:MM"
+    string endTime "HH:MM"
+    number slotDuration "min, veelvoud van 15"
+    string[] pauzes "HH:MM[]"
+  }
+  TEAM {
+    string id PK
+    string groepId FK
+    string teamNummer
+    string slotTime "HH:MM of null"
+  }
+  STUDENT {
+    string id PK
+    string groepId FK
+    string teamId FK
+    string name
+  }
+  TEAMASSESSMENT {
+    string teamId PK
+    string groepId
+    string status "not_started|partial|completed"
+  }
+  STUDENTASSESSMENT {
+    map scores "critId(1-6) -> 1..4"
+    map isDuo "critId -> bool"
+    map notes "critId -> string"
+  }</code></pre>
+<div class="diagram-label">🖼 Gerenderd (voor mensen)</div>
+<div class="mermaid">erDiagram
+  GROEP ||--o{ TEAM : "bevat"
+  TEAM  ||--o{ STUDENT : "bevat"
+  TEAM  ||--o| TEAMASSESSMENT : "heeft (key=teamId)"
+  TEAMASSESSMENT ||--o{ STUDENTASSESSMENT : "studentAssessments[studentId]"
+  GROEP {
+    string id PK
+    string name
+    string_array assessoren
+    string datum
+    string startTime
+    string endTime
+    number slotDuration
+    string_array pauzes
+  }
+  TEAM {
+    string id PK
+    string groepId FK
+    string teamNummer
+    string slotTime
+  }
+  STUDENT {
+    string id PK
+    string groepId FK
+    string teamId FK
+    string name
+  }
+  TEAMASSESSMENT {
+    string teamId PK
+    string groepId
+    string status
+  }
+  STUDENTASSESSMENT {
+    map scores
+    map isDuo
+    map notes
+  }</div>
+
+<h4>TypeScript-interfaces (exact te implementeren in <code>src/types.ts</code>)</h4>
+<pre><code>export interface Groep {
+  id: string; name: string; assessoren: string[];
+  datum: string;        // YYYY-MM-DD
+  startTime: string; endTime: string; // HH:MM
+  slotDuration: number; // minuten, veelvoud van 15
+  pauzes: string[];     // HH:MM[]
+}
+export interface Team { id: string; groepId: string; teamNummer: string; slotTime: string | null; }
+export interface Student { id: string; groepId: string; teamId: string; name: string; }
+
+export interface StudentAssessment {
+  scores: Record&lt;number, number&gt;;  // critId 1-6 -> score 1-4
+  isDuo:  Record&lt;number, boolean&gt;; // critId -> samen gescoord
+  notes:  Record&lt;number, string&gt;;  // critId -> vrije tekst incl. "✓ tag"-regels
+}
+export interface TeamAssessment {
+  teamId: string; groepId: string;
+  studentAssessments: Record&lt;string, StudentAssessment&gt;; // studentId -> ...
+  status: "not_started" | "partial" | "completed";
+  aiTranscript?: { timestamp:string; speaker:string; text:string;
+    competencyDetected?: { criteriumId:number; studentId:string; level:LevelType; quote:string } }[];
+  aiFeedbackSuggestions?: { studentId:string; strengths:string[]; improvements:string[];
+    scoreSuggestions: { criteriumId:number; level:LevelType; reasoning:string }[] }[];
+}
+export type LevelType = "Onder" | "Op" | "Boven" | "Excellent";
+export const LEVEL_SCORES: Record&lt;LevelType, number&gt; = { Onder:1, Op:2, Boven:3, Excellent:4 };</code></pre>
+
+<h4>De 6 vaste criteria (<code>CRITERIA</code>) — letterlijk over te nemen</h4>
+<table>
+<tr><th>#</th><th>Titel</th><th>Tags per niveau (Onder / Op / Boven / Excellent)</th></tr>
+<tr><td>1</td><td>Veranderen en evalueren</td><td><span class="small">Onder: geen theorie · concept onjuist · niet uitgelegd · weinig voorbereid<br>Op: concept benoemd · basisuitleg · beperkt voorbeeld · weinig diepgang<br>Boven: helder uitgelegd · theorie correct · goed voorbeeld · verband met praktijk<br>Excellent: diepgaande analyse · concepten verbonden · kritische reflectie · eigenstandige toepassing</span></td></tr>
+<tr><td>2</td><td>Sociaal communicatieve vaardigheden</td><td><span class="small">Onder: luistert niet · onduidelijk verhaal · onderbreekt duo · passieve houding<br>Op: actief luisterend · vriendelijk · redelijk verwoord · volgt de rode draad<br>Boven: sterke interactie · vraagt goed door · vloeiende argumentatie · professionele toon<br>Excellent: leidt het gesprek · empathisch sturend · uitstekende pitch · overtuigend debatterend</span></td></tr>
+<tr><td>3</td><td>Schakelen en verbinden</td><td><span class="small">Onder: negeert weerstand · gaat in verdediging · geen inleving · blijft drammen<br>Op: erkent weerstand · luistert naar argument · zoekt een compromis · blijft kalm<br>Boven: verbinding gemaakt · weerstand omgebogen · belangen benoemd · gemeenschappelijk doel<br>Excellent: synergie gecreëerd · strategisch bewogen · diep vertrouwen gewekt · weerstand als kans</span></td></tr>
+<tr><td>4</td><td>Professionaliseren (bijdrage)</td><td><span class="small">Onder: geen procesreflectie · leert niet van feedback · geen eigen visie · nauwelijks bijgedragen<br>Op: reflecteert oppervlakkig · staat open voor feedback · toont basale groei · voldoende bijdrage<br>Boven: sterke reflectie · feedback toegepast · toont concrete groei · actieve trekker<br>Excellent: diepgaande zelfanalyse · proactieve leergreep · visie op professie · leiderschap in team</span></td></tr>
+<tr><td>5</td><td>Professionaliseren (intercultureel)</td><td><span class="small">Onder: negeert cultuurverschil · bevooroordeeld · geen cultureel besef · ethnocentrisch<br>Op: herkent cultuurfactor · toont belangstelling · respectvolle houding · basiskennis cultuur<br>Boven: concept geanalyseerd · overbrugt cultuurkloof · past cultuurmodel toe · sensitief handelen<br>Excellent: diep cultureel inzicht · inclusief klimaat · cultuur specifieke synergie · rolmodel diversiteit</span></td></tr>
+<tr><td>6</td><td>Handelen vanuit waarden</td><td><span class="small">Onder: negeert integriteit · geen ethisch besef · eigenbelang eerst · kent OOA regels niet<br>Op: herkent moreel dillema · noemt OOA gedragscode · zoekt fatsoenlijke oplossing · integer basisniveau<br>Boven: analyseert moreel aspect · beargumenteert afweging · integer onder druk · conform OOA code<br>Excellent: moreel kompas getoond · stelt integriteit centraal · overstijgende ethische visie · ambassadeur waarden</span></td></tr>
+</table>
+<p class="small">Elk criterium heeft ook een <code>description</code> (zie originele rubric-tekst) en de structuur
+<code>{ id, title, description, tagsByLevel: { Onder[], Op[], Boven[], Excellent[] } }</code>.</p>
+
+<!-- DOMEINREGELS -->
+<h2 id="domein">A5 · Domeinregels (scoring &amp; status)</h2>
+<h4>Niveau ↔ score</h4>
+<p><code>Onder=1</code>, <code>Op=2</code>, <code>Boven=3</code>, <code>Excellent=4</code>. Per student max 6×4 = <strong>24 punten</strong>.</p>
+
+<h4>Cijfer (<code>getCijferFromScore(total)</code>) — alleen tonen bij volledig (6/6) gescoord</h4>
+<table>
+<tr><th>Totaal punten</th><th>≥24</th><th>≥20</th><th>≥16</th><th>≥14</th><th>≥12</th><th>≥10</th><th>&lt;10</th></tr>
+<tr><td>Cijfer</td><td>10</td><td>9</td><td>8</td><td>7</td><td>6</td><td>5</td><td>4</td></tr>
+</table>
+
+<h4>Slaag/zak</h4>
+<p>Een student is <strong>geslaagd</strong> ⇔ volledig beoordeeld (alle 6) <em>én</em> geen enkel criterium op niveau
+"Onder" (score 1). Eén enkele 1 = <strong>gezakt</strong>, ongeacht het cijfer.</p>
+
+<h4>Team-status</h4>
+<div class="diagram-label">📋 Mermaid-broncode (voor AI)</div>
+<pre><code>stateDiagram-v2
+  [*] --> not_started
+  not_started --> partial : eerste score gezet (minstens 1 student)
+  partial --> completed : ALLE studenten hebben ALLE 6 criteria gescoord
+  completed --> partial : score verwijderd / student-reset
+  partial --> not_started : alle scores verwijderd
+  note right of completed : kalenderkaart wordt groen ("Voltooid")\nstatus != geslaagd/gezakt</code></pre>
+<div class="diagram-label">🖼 Gerenderd (voor mensen)</div>
+<div class="mermaid">stateDiagram-v2
+  [*] --> not_started
+  not_started --> partial : eerste score gezet
+  partial --> completed : ALLE studenten ALLE 6 gescoord
+  completed --> partial : score verwijderd / student-reset
+  partial --> not_started : alle scores verwijderd
+  note right of completed : kaart wordt groen "Voltooid"\n(status != geslaagd/gezakt)</div>
+<div class="note"><strong>Let op (bekende UX-valkuil):</strong> de groene kalenderkleur betekent <em>Voltooid</em>
+(alle criteria ingevuld), niet <em>geslaagd</em>. Slaag/zak verschijnt enkel in Resultaten &amp; Feedbackrapport.</div>
+
+<!-- PERSISTENTIE -->
+<h2 id="persistentie">A6 · Persistentie &amp; state-flow</h2>
+<p>State leeft in <code>App</code> als vier stukken. Elke mutatie gaat via een <code>updateAndSave*</code>-helper die
+zowel React-state zet als naar <code>localStorage</code> schrijft. Bij mount wordt geladen met fallback naar seed-data.</p>
+<table>
+<tr><th>localStorage-sleutel</th><th>Type</th><th>Fallback bij leeg</th></tr>
+<tr><td><code>promef_groepen</code></td><td><code>Groep[]</code></td><td><code>INITIAL_GROEPEN</code></td></tr>
+<tr><td><code>promef_teams</code></td><td><code>Team[]</code></td><td><code>INITIAL_TEAMS</code></td></tr>
+<tr><td><code>promef_studenten</code></td><td><code>Student[]</code></td><td><code>INITIAL_STUDENTEN</code></td></tr>
+<tr><td><code>promef_assessments</code></td><td><code>Record&lt;string,TeamAssessment&gt;</code> (key=teamId)</td><td><code>INITIAL_ASSESSMENTS</code></td></tr>
+</table>
+
+<div class="diagram-label">📋 Mermaid-broncode (voor AI)</div>
+<pre><code>sequenceDiagram
+  actor D as Docent
+  participant V as View (bijv. AssessmentView)
+  participant A as App (state)
+  participant L as localStorage
+  D->>V: wijzigt score / notitie
+  V->>V: bereken nieuwe TeamAssessment + status
+  V->>A: onSaveAssessment(next)
+  A->>A: setAssessments({...prev, [teamId]: next})
+  A->>L: saveToLocalStorage("promef_assessments", next)
+  Note over A,V: re-render → Calendar/Results tonen nieuwe status</code></pre>
+<div class="diagram-label">🖼 Gerenderd (voor mensen)</div>
+<div class="mermaid">sequenceDiagram
+  actor D as Docent
+  participant V as View
+  participant A as App (state)
+  participant L as localStorage
+  D->>V: wijzigt score / notitie
+  V->>V: bereken nieuwe TeamAssessment + status
+  V->>A: onSaveAssessment(next)
+  A->>A: setAssessments(merge teamId)
+  A->>L: saveToLocalStorage("promef_assessments")
+  Note over A,V: re-render Calendar/Results</div>
+
+<!-- VIEWS -->
+<h2 id="views">A7 · Schermen (functionele specificatie)</h2>
+<p>Navigatie via 4 tabbladen in de header: <strong>Kalenderoverzicht</strong>, <strong>Resultatenmatrix</strong>,
+<strong>Studenten &amp; Duo's</strong>, <strong>Dataset &amp; Import</strong>. <code>assessment</code> en
+<code>feedback</code> zijn sub-views (geen tab) bereikt via klik op respectievelijk een teamkaart of een rapportknop.</p>
+
+<h3>CalendarOverview (dashboard)</h3>
+<ul>
+  <li>Bovenaan 3 statistiektegels: voltooid/totaal + voortgangsbalk; aantal "partial"; totaal teams + #studenten/#klassen.</li>
+  <li>Per groep een kolom met alle tijdsloten (uit <code>generateTimeSlots</code>). Elk slot toont: pauze, teamkaart of lege dropzone.</li>
+  <li>Teamkaart toont teamnummer, statusbadge (Onbeoordeeld/Deels/Voltooid met kleur) en studentnamen. Klik → open assessment.</li>
+  <li>Drag-&amp;-drop: sleep een teamkaart naar een ander slot <em>binnen dezelfde groep</em>; bezet slot ⇒ wissel slottijden (<code>onMoveTeam</code>).</li>
+  <li>Klik op leeg slot ⇒ pauze toevoegen; klik op ✕ in pauze ⇒ verwijderen (<code>onModifyPauze</code>). Pauze toevoegen op bezet slot zet dat team op <code>slotTime=null</code>.</li>
+</ul>
+
+<h3>AssessmentView (scoren)</h3>
+<ul>
+  <li>Ondersteunt 1..N studenten in een team; <code>isSolo</code> = exact 1. Tabbalk C1–C6 met completion-kleur.</li>
+  <li>Per criterium: info-blok, observatie-tag-pickers per niveau (klik/sleep), en per student een niveau-keuze (4 knoppen) + notitieveld.</li>
+  <li>Tag toevoegen schrijft regel <code>"✓ &lt;tag&gt;"</code> in de notities; bij duo opent een student-picker (solo/duo-direct).</li>
+  <li><strong>Duo-score</strong>: checkbox per criterium synchroniseert score+notitie van student 1 naar de rest; vervolgstudenten worden read-only.</li>
+  <li><strong>Per-student reset</strong>: knop (↺) in studentkop wist die student volledig (<code>{scores:{},isDuo:{},notes:{}}</code>) na bevestiging; uitgeschakeld als er niets te wissen is.</li>
+  <li>Auto-save bij elke wijziging via <code>onSaveAssessment</code> (herberekent status). Rechterkolom = AiNotulistPanel.</li>
+</ul>
+
+<h3>AiNotulistPanel (AI co-pilot)</h3>
+<ul>
+  <li>Props: <code>students: {id,name}[]</code> + <code>onApplySuggestions(scores,tags,notes,feedback)</code>.</li>
+  <li><strong>Client-side simulatie</strong> (geen server): 3 knoppen tonen de echte teamnamen + een scoreprofiel:
+    <em>Alles onvoldoende</em> (alle "Onder"), <em>Random/Voldoende</em> (willekeurig uit Op/Boven/Excellent),
+    <em>Alles uitstekend</em> (alle "Excellent"). <code>buildSimulation()</code> genereert transcript + per-regel
+    competentie-detecties + analyse, gegrond op de rubric-tags. Afspeelloop ~700 ms/regel.</li>
+  <li><strong>Live audio/upload</strong> → <code>POST /api/analyze-assessment</code> (Gemini of fallback). Toont transcript + detecties.</li>
+  <li>"Gebruik AI Suggesties" → <code>onApplySuggestions</code>; AssessmentView mapt analyse-keys <em>op volgorde</em> naar de echte studenten.</li>
+  <li>Transcript downloadbaar als .txt.</li>
+</ul>
+
+<h3>ResultsView (matrix)</h3>
+<ul>
+  <li>Klasselector. Per student: 6 scorecellen (kleur per niveau), totaal punten of "x/6", cijfer-badge, slaag/zak-vlag, knop naar rapport.</li>
+  <li>CSV-export (puntkomma) met scores, totaal, cijfer en status. Legenda met slaag/zak-logica + cijfer-sleutel.</li>
+</ul>
+
+<h3>FeedbackView (rapport)</h3>
+<ul>
+  <li>Studentselector + printknop (<code>window.print()</code>; print-CSS verbergt <code>.no-print</code>).</li>
+  <li>A4-rapport: kop met kandidaat/datum/klas/assessoren; samenvatting (totaal/24, cijfer, geslaagd/gezakt);
+    per criterium niveau-badge + ✓-tags + vrije tekst; sterke punten/ontwikkelpunten afgeleid uit notities (met fallbacks).</li>
+</ul>
+
+<h3>StudentManager</h3>
+<ul>
+  <li>3 formulieren: groep aanmaken (naam/assessoren/datum/slottijd/duur, default pauze 12:00); teams in bulk (verdeelt over sloten, slaat 12:00 over); student toevoegen (groep→team).</li>
+  <li>Overzicht per groep met teams + studenten; verwijderacties (groep cascade-verwijdert teams/studenten/assessments).</li>
+</ul>
+
+<h3>DataManager</h3>
+<ul>
+  <li>CSV-import (kolommen Student/Naam, Groep/Klas, Team/Teamnummer; delimiter <code>;</code> of <code>,</code> auto-detect) → reset assessments.</li>
+  <li>JSON back-up maken (alle 4 stukken) + herstellen (valideert aanwezige keys). Voorbeelddata laden. Volledige reset (met bevestiging).</li>
+</ul>
+
+<!-- API -->
+<h2 id="api">A8 · Server-API</h2>
+<h4>POST <code>/api/simulate-analysis</code> (legacy, optioneel)</h4>
+<p>Body <code>{ scenarioId }</code> → vast scenario-object <code>{ title, transcript[], analysis{scores,tags,reasoning,feedback} }</code>
+of <code>404</code>. <span class="small">De client gebruikt dit niet meer (simulatie is client-side), maar het endpoint mag blijven bestaan en wordt door de fallback hergebruikt.</span></p>
+
+<h4>POST <code>/api/analyze-assessment</code> (kern)</h4>
+<pre><code>// Request
+{ audioData?: base64, mimeType?: string, transcriptText?: string,
+  student1Name: string, student2Name?: string }   // "" => solo
+
+// Response (200)
+{ success: true, simulated: boolean,
+  transcript: { timestamp, speaker, text }[],
+  analysis: {
+    scores:    { [naam]: { "1".."6": 1..4 } },
+    tags:      { [naam]: { "1".."6": string[] } },
+    reasoning: { [naam]: { "1".."6": string } },
+    quotes:    { [naam]: { "1".."6": string } },
+    feedback:  { [naam]: { strengths:string[], improvements:string[] } }
+  } }
+// Fout: 500 { error, details }</code></pre>
+<p>Gedrag: zónder geldige <code>GEMINI_API_KEY</code> → graceful fallback met een vast scenario (namen worden geremapt
+naar <code>student1Name/student2Name</code>). Mét sleutel → Gemini <code>generateContent</code> met
+<code>responseSchema</code> (objectsleutels exact gelijk aan de aangeleverde studentnamen; 1 student bij solo),
+<code>temperature 0.2</code>, Nederlandstalige systeeminstructie.</p>
+
+<div class="diagram-label">📋 Mermaid-broncode (voor AI)</div>
+<pre><code>sequenceDiagram
+  participant P as AiNotulistPanel
+  participant S as Express /api/analyze-assessment
+  participant G as Gemini
+  P->>S: POST {audioData|transcriptText, namen}
+  alt geen API key
+    S-->>P: success, simulated=true (fallback scenario, namen geremapt)
+  else key aanwezig
+    S->>G: generateContent(contents, responseSchema, temp=0.2)
+    G-->>S: JSON {transcript, analysis}
+    S-->>P: success, simulated=false
+  end
+  P->>P: render transcript + detecties
+  P->>P: "Gebruik AI Suggesties" -> onApplySuggestions</code></pre>
+<div class="diagram-label">🖼 Gerenderd (voor mensen)</div>
+<div class="mermaid">sequenceDiagram
+  participant P as AiNotulistPanel
+  participant S as Express API
+  participant G as Gemini
+  P->>S: POST {audio|transcript, namen}
+  alt geen API key
+    S-->>P: success simulated=true (fallback)
+  else key aanwezig
+    S->>G: generateContent(schema, temp=0.2)
+    G-->>S: JSON {transcript, analysis}
+    S-->>P: success simulated=false
+  end
+  P->>P: render transcript + detecties
+  P->>P: Gebruik AI Suggesties -> onApplySuggestions</div>
+
+<!-- TESTSTRATEGIE -->
+<h2 id="teststrategie">A9 · Teststrategie</h2>
+<table>
+<tr><th>Soort</th><th>Tool</th><th>Scope</th><th>Wanneer</th></tr>
+<tr><td><span class="pill unit">UNIT</span></td><td>Vitest</td><td>pure functies (utils, types-helpers, buildSimulation)</td><td>elke fase</td></tr>
+<tr><td><span class="pill unit">COMPONENT</span></td><td>Vitest + RTL</td><td>losse component-gedrag &amp; render</td><td>per UI-fase</td></tr>
+<tr><td><span class="pill api">API</span></td><td>Supertest</td><td>Express endpoints (Gemini gemockt)</td><td>F7</td></tr>
+<tr><td><span class="pill int">INTEGRATIE</span></td><td>Vitest + RTL</td><td>App + view + localStorage samen</td><td>F2, F5, F8, F10</td></tr>
+<tr><td><span class="pill reg">REGRESSIE</span></td><td>volledige <code>vitest run</code></td><td>alle bestaande tests blijven groen</td><td>einde elke fase vanaf F5</td></tr>
+<tr><td><span class="pill smoke">SMOKE</span></td><td>Playwright <code>@smoke</code></td><td>app start, dashboard rendert, navigatie werkt</td><td>na F2, F7, F11</td></tr>
+<tr><td><span class="pill e2e">E2E</span></td><td>Playwright</td><td>kritieke gebruikersreizen end-to-end</td><td>F11 (+ deelreizen vanaf F5)</td></tr>
+</table>
+<div class="gate"><strong>Definition of Done per fase:</strong> (1) alle subtaken af · (2) alle nieuwe tests groen ·
+(3) <code>npm run lint</code> (tsc) schoon · (4) regressie groen · (5) commit gemaakt (push optioneel).</div>
+
+<!-- GITFLOW -->
+<h2 id="gitflow">A10 · Git-workflow</h2>
+<p>Eén feature-branch per fase, commit pas na groene tests. Geen push zonder expliciete toestemming van de gebruiker.</p>
+<div class="diagram-label">📋 Mermaid-broncode (voor AI)</div>
+<pre><code>flowchart LR
+  A["Subtaken bouwen"] --> B["Tests schrijven<br/>(unit/api/integratie)"]
+  B --> C{"Alle tests groen?<br/>+ tsc schoon"}
+  C -- nee --> A
+  C -- ja --> D["git add -A<br/>git commit -m 'feat(Fx): ...'"]
+  D --> E{"Push gewenst?"}
+  E -- ja --> F["git push origin branch"]
+  E -- nee --> G["volgende fase"]
+  F --> G</code></pre>
+<div class="diagram-label">🖼 Gerenderd (voor mensen)</div>
+<div class="mermaid">flowchart LR
+  A["Subtaken bouwen"] --> B["Tests schrijven"]
+  B --> C{"Groen + tsc schoon?"}
+  C -- nee --> A
+  C -- ja --> D["git commit feat(Fx)"]
+  D --> E{"Push gewenst?"}
+  E -- ja --> F["git push"]
+  E -- nee --> G["volgende fase"]
+  F --> G</div>
+
+<hr>
+
+<!-- =================== DEEL B =================== -->
+<h2 id="fasen">B · Bouwplan in fasen</h2>
+<p>Bouw strikt op volgorde. Elke fase: <em>Doel → Subtaken → Tests → Test-gate → Commit</em>. Een fase is pas "klaar"
+als de gate gehaald is.</p>
+
+<div class="diagram-label">📋 Mermaid-broncode (voor AI)</div>
+<pre><code>flowchart TD
+  F0["F0 Setup"] --> F1["F1 Domein & utils"]
+  F1 --> F2["F2 Persistentie & shell"]
+  F2 --> F3["F3 Studentbeheer"]
+  F2 --> F4["F4 Kalender"]
+  F3 --> F5["F5 Assessment (scoring)"]
+  F4 --> F5
+  F5 --> F6["F6 AI-simulatie"]
+  F6 --> F7["F7 Server & Gemini"]
+  F5 --> F8["F8 Resultaten"]
+  F8 --> F9["F9 Feedbackrapport"]
+  F3 --> F10["F10 Databeheer"]
+  F7 --> F11["F11 E2E & release"]
+  F9 --> F11
+  F10 --> F11</code></pre>
+<div class="diagram-label">🖼 Gerenderd (voor mensen)</div>
+<div class="mermaid">flowchart TD
+  F0["F0 Setup"] --> F1["F1 Domein & utils"]
+  F1 --> F2["F2 Persistentie & shell"]
+  F2 --> F3["F3 Studentbeheer"]
+  F2 --> F4["F4 Kalender"]
+  F3 --> F5["F5 Assessment"]
+  F4 --> F5
+  F5 --> F6["F6 AI-simulatie"]
+  F6 --> F7["F7 Server & Gemini"]
+  F5 --> F8["F8 Resultaten"]
+  F8 --> F9["F9 Feedbackrapport"]
+  F3 --> F10["F10 Databeheer"]
+  F7 --> F11["F11 E2E & release"]
+  F9 --> F11
+  F10 --> F11</div>
+
+<!-- F0 -->
+<div class="card phase" id="f0">
+<h3>F0 · Projectsetup &amp; tooling</h3>
+<p><strong>Doel:</strong> draaiend skelet — lege React-app via Vite + Express, met test-harnas geconfigureerd.</p>
+<h4>Subtaken</h4>
+<ul class="checks">
+  <li><code>npm init</code>, dependencies + dev-/test-dependencies installeren (zie A2).</li>
+  <li><code>tsconfig.json</code> (target ES2022, jsx react-jsx, moduleResolution bundler, noEmit, alias <code>@/*</code>).</li>
+  <li><code>vite.config.ts</code> met <code>react()</code> + <code>tailwindcss()</code> en alias <code>@</code>.</li>
+  <li><code>index.html</code> (#root + <code>/src/main.tsx</code>), <code>src/main.tsx</code> (StrictMode), <code>src/index.css</code> (tailwind-import + Inter/JetBrains + print-CSS).</li>
+  <li><code>app.ts</code> (Express, JSON-limit 50mb, geen listen) + <code>server.ts</code> (Vite-middleware in dev / static <code>dist</code> in prod + <code>listen(3000)</code>).</li>
+  <li><code>vitest.config.ts</code> (jsdom, setup met jest-dom), <code>playwright.config.ts</code> (baseURL <code>http://localhost:3000</code>, webServer = <code>npm run dev</code>), <code>.gitignore</code>.</li>
+  <li><code>.env.example</code> met <code>GEMINI_API_KEY</code>.</li>
+</ul>
+<h4>Tests</h4>
+<p><span class="pill unit">UNIT</span> sanity-test (<code>1+1===2</code>) draait via <code>vitest run</code>.
+<span class="pill smoke">SMOKE</span> Playwright: <code>npm run dev</code> start en <code>/</code> geeft HTTP 200 met <code>#root</code>.</p>
+<div class="gate"><strong>Gate:</strong> <code>npm run dev</code> toont lege app; <code>npm test</code> + smoke groen; <code>tsc</code> schoon.</div>
+<p><span class="pill commit">COMMIT</span> <code>chore(F0): project scaffold, build &amp; test harness</code></p>
+</div>
+
+<!-- F1 -->
+<div class="card phase" id="f1">
+<h3>F1 · Domeinmodel &amp; pure utilities</h3>
+<p><strong>Doel:</strong> alle types, constanten en zijeffect-vrije functies — het hart van de business-logica, volledig getest.</p>
+<h4>Subtaken</h4>
+<ul class="checks">
+  <li><code>src/types.ts</code>: interfaces, <code>LevelType</code>, <code>LEVEL_SCORES</code>, <code>LEVEL_COLORS</code>, <code>LEVEL_BADGES</code>, de 6 <code>CRITERIA</code> (zie A4), <code>getCijferFromScore</code>.</li>
+  <li><code>src/utils.ts</code>: <code>generateId</code>, <code>timeToMinutes</code>, <code>minutesToTime</code>, <code>generateTimeSlots</code>, <code>formatDutchDate</code>, <code>parseCSV</code>, <code>downloadBackup</code>, <code>downloadCSV</code>, <code>load/saveToLocalStorage</code>.</li>
+  <li>Seed-data: <code>INITIAL_GROEPEN</code>, <code>INITIAL_TEAMS</code>, <code>INITIAL_STUDENTEN</code>, <code>INITIAL_ASSESSMENTS</code>.</li>
+</ul>
+<h4>Tests <span class="pill unit">UNIT</span></h4>
+<ul>
+  <li><code>getCijferFromScore</code>: grenswaarden 24→10, 23→9, 20→9, 16→8, 14→7, 12→6, 10→5, 9→4, 6→4.</li>
+  <li><code>generateTimeSlots("09:00","11:00",30)</code> → 4 sloten; <code>timeToMinutes/minutesToTime</code> round-trip.</li>
+  <li><code>parseCSV</code>: detecteert <code>;</code> en <code>,</code>; maakt groep/team/student; gooit fout bij ontbrekende kolommen; verdeelt sloten en slaat 12:00 over.</li>
+  <li><code>load/saveToLocalStorage</code>: schrijft+leest JSON; geeft fallback bij corrupte data (mock <code>localStorage</code>).</li>
+</ul>
+<div class="gate"><strong>Gate:</strong> ~100% dekking op utils/types; alle unit-tests groen.</div>
+<p><span class="pill commit">COMMIT</span> <code>feat(F1): domain types, criteria, grading &amp; utilities (tested)</code></p>
+</div>
+
+<!-- F2 -->
+<div class="card phase" id="f2">
+<h3>F2 · Persistentielaag &amp; app-shell</h3>
+<p><strong>Doel:</strong> <code>App.tsx</code> met centrale state, load-on-mount, save-helpers en tabnavigatie (views als placeholders).</p>
+<h4>Subtaken</h4>
+<ul class="checks">
+  <li>State: <code>groepen/teams/studenten/assessments</code> + <code>activeView/activeTeamId/activeStudentFeedbackId</code>.</li>
+  <li><code>useEffect</code> load-on-mount met fallback naar seed-data; <code>updateAndSave*</code>-helpers (state + localStorage).</li>
+  <li>Alle callback-handlers: add/delete groep (cascade), bulk teams, add/delete student, move team, modify pauze, save assessment, import/restore/example/reset.</li>
+  <li>Header met 4 tabs + sessie-statusregel; routing op <code>activeView</code>; placeholders voor de 6 views.</li>
+</ul>
+<h4>Tests <span class="pill int">INTEGRATIE</span></h4>
+<ul>
+  <li>App mount laadt seed-data; tab-wissel rendert juiste placeholder.</li>
+  <li><code>handleDeleteGroep</code> verwijdert groep + bijbehorende teams/studenten/assessments (cascade).</li>
+  <li>Een save-assessment schrijft naar <code>promef_assessments</code> en overleeft remount.</li>
+</ul>
+<p><span class="pill smoke">SMOKE</span> Playwright @smoke: app laadt, dashboard zichtbaar, 4 tabs klikbaar.</p>
+<div class="gate"><strong>Gate:</strong> integratie + smoke groen; regressie (F1) groen.</div>
+<p><span class="pill commit">COMMIT</span> <code>feat(F2): app shell, central state &amp; localStorage persistence</code></p>
+</div>
+
+<!-- F3 -->
+<div class="card phase" id="f3">
+<h3>F3 · Studentbeheer (StudentManager)</h3>
+<p><strong>Doel:</strong> groepen/teams/studenten aanmaken &amp; verwijderen via UI.</p>
+<h4>Subtaken</h4>
+<ul class="checks">
+  <li>Formulier groep (naam upper-case, assessoren split op komma, default pauze 12:00).</li>
+  <li>Bulk-teams (verdeelt over sloten, slaat pauze over) + bevestiging.</li>
+  <li>Student-formulier (groep→team afhankelijk); overzicht per groep met verwijderknoppen (groep met confirm-cascade).</li>
+</ul>
+<h4>Tests <span class="pill unit">COMPONENT</span></h4>
+<ul>
+  <li>Groep toevoegen roept <code>onAddGroep</code> met correcte payload (naam uppercase, assessoren-array).</li>
+  <li>Team-select is disabled tot een groep gekozen is; submit disabled bij incomplete invoer.</li>
+  <li>Verwijderknop groep vraagt bevestiging en roept <code>onDeleteGroep</code>.</li>
+</ul>
+<div class="gate"><strong>Gate:</strong> component-tests + regressie groen.</div>
+<p><span class="pill commit">COMMIT</span> <code>feat(F3): student/group/team management UI</code></p>
+</div>
+
+<!-- F4 -->
+<div class="card phase" id="f4">
+<h3>F4 · Kalenderoverzicht (CalendarOverview)</h3>
+<p><strong>Doel:</strong> roosterweergave met statistieken, statusbadges, pauzes en drag-&amp;-drop.</p>
+<h4>Subtaken</h4>
+<ul class="checks">
+  <li>Statistiektegels (voltooid/totaal + balk; partial; totalen).</li>
+  <li>Per groep slot-kolom; render pauze / teamkaart / lege dropzone; statuskleuren + badges.</li>
+  <li>Pauze toevoegen/verwijderen; drag-&amp;-drop binnen groep met slot-swap; klik op kaart → <code>onSelectTeam</code>.</li>
+</ul>
+<h4>Tests <span class="pill unit">COMPONENT</span></h4>
+<ul>
+  <li>Statusbadge: not_started→"Onbeoordeeld", partial→"Deels beoordeeld", completed→"Voltooid" (+ kleurklassen).</li>
+  <li>Drop binnen zelfde groep roept <code>onMoveTeam</code>; drop naar andere groep doet niets.</li>
+  <li>Klik leeg slot → <code>onModifyPauze(...,"add")</code>; ✕ op pauze → <code>"remove"</code>.</li>
+</ul>
+<div class="gate"><strong>Gate:</strong> component-tests + regressie groen.</div>
+<p><span class="pill commit">COMMIT</span> <code>feat(F4): calendar scheduling, statuses &amp; drag-drop</code></p>
+</div>
+
+<!-- F5 -->
+<div class="card phase" id="f5">
+<h3>F5 · Assessment-werkblad (AssessmentView) — kernscoring</h3>
+<p><strong>Doel:</strong> het beoordelingshart: niveaus, tags, notities, duo-sync, reset, auto-save + statusberekening.</p>
+<h4>Subtaken</h4>
+<ul class="checks">
+  <li>Lokale werkkopie + <code>updateLocalAndSave</code> (herberekent not_started/partial/completed over álle studenten × 6).</li>
+  <li>Tabbalk C1–C6 met completion-kleur; criterium-infoblok.</li>
+  <li>Niveau-knoppen per student (toggle naar null bij herklik); notitieveld (auto-save).</li>
+  <li>Observatie-tags: klik/sleep → schrijf <code>"✓ tag"</code>-regel; solo direct, duo via picker, duo-criterium direct op allen.</li>
+  <li>Duo-score-checkbox: sync score+notitie van student 1 → rest; vervolgstudenten read-only.</li>
+  <li>Per-student reset-knop (↺) met bevestiging; disabled als student leeg.</li>
+</ul>
+<h4>Tests <span class="pill unit">COMPONENT</span> <span class="pill int">INTEGRATIE</span></h4>
+<ul>
+  <li>Score zetten → <code>onSaveAssessment</code> met juiste <code>scores[critId]</code>; status wordt partial.</li>
+  <li>Alle 6 voor alle studenten → status completed; één score wissen → terug naar partial.</li>
+  <li>Duo-toggle repliceert score van student 1; slave-veld disabled.</li>
+  <li>Tag-klik voegt <code>"✓ tag"</code> toe en verwijdert bij herklik.</li>
+  <li>Reset wist één student volledig en laat teamgenoot ongemoeid (integratie via App + localStorage).</li>
+</ul>
+<div class="note"><span class="pill reg">REGRESSIE</span> + eerste <span class="pill e2e">E2E-deelreis</span>: "open team → scoor alle criteria → kaart wordt Voltooid".</div>
+<div class="gate"><strong>Gate:</strong> component+integratie+regressie groen; E2E-deelreis groen.</div>
+<p><span class="pill commit">COMMIT</span> <code>feat(F5): assessment scoring, tags, duo-sync &amp; per-student reset</code></p>
+</div>
+
+<!-- F6 -->
+<div class="card phase" id="f6">
+<h3>F6 · AI co-pilot — client-side simulatie (AiNotulistPanel)</h3>
+<p><strong>Doel:</strong> dynamische simulaties op basis van de echte teamleden + scoreprofiel; suggesties toepasbaar op het formulier.</p>
+<h4>Subtaken</h4>
+<ul class="checks">
+  <li>Props omzetten naar <code>students:{id,name}[]</code>; afgeleide <code>displayNames</code>, <code>isSolo</code>, <code>s1Name/s2Name</code>.</li>
+  <li><code>buildSimulation(students, pattern)</code>: per (student×criterium) niveau vastzetten; transcript (Examinator + studentregels uit rubric-tags) + per-regel detecties + analyse (scores/tags/reasoning/feedback) keyed op naam.</li>
+  <li>Patroon-keuze: <code>onvoldoende</code>→Onder, <code>uitstekend</code>→Excellent, <code>random</code>→uit {Op,Boven,Excellent}.</li>
+  <li>Afspeelloop (~700 ms): stream transcript + detecties; aan einde analyse tonen.</li>
+  <li>"Gebruik AI Suggesties" → <code>onApplySuggestions</code>; transcript-download.</li>
+  <li>AssessmentView mapt analyse-keys <em>op volgorde</em> naar studenten (N-veilig).</li>
+</ul>
+<h4>Tests <span class="pill unit">UNIT</span> <span class="pill int">INTEGRATIE</span></h4>
+<ul>
+  <li><code>buildSimulation</code> "onvoldoende": alle scores=1; "uitstekend": alle=4; "random": alle ∈ {2,3,4}.</li>
+  <li>Aantal student-detecties = studenten × 6; transcript begint met Examinator-welkom met juiste namen.</li>
+  <li>Solo (1 student) en N=3 produceren correct gevormde analyse-keys.</li>
+  <li>Integratie: simulatie "onvoldoende" toepassen → student gezakt in Resultaten (sluit de bekende bug).</li>
+</ul>
+<div class="gate"><strong>Gate:</strong> unit+integratie+regressie groen.</div>
+<p><span class="pill commit">COMMIT</span> <code>feat(F6): dynamic client-side AI simulations from team roster</code></p>
+</div>
+
+<!-- F7 -->
+<div class="card phase" id="f7">
+<h3>F7 · Backend &amp; Gemini-audioanalyse</h3>
+<p><strong>Doel:</strong> de twee API-endpoints met testbare app en gemockte Gemini-client.</p>
+<h4>Subtaken</h4>
+<ul class="checks">
+  <li><code>POST /api/simulate-analysis</code> → scenario of 404.</li>
+  <li><code>POST /api/analyze-assessment</code>: lazy Gemini-client (injecteerbaar); fallback zonder key (scenario + naam-remap); met key: <code>responseSchema</code> dynamisch op aantal studenten, temp 0.2, NL systeeminstructie; audio inline of transcripttekst.</li>
+  <li>Robuuste foutafhandeling (500 met details); JSON-limit 50mb.</li>
+  <li>Frontend audio/upload-pad koppelen aan endpoint (base64-conversie, mic-permissies).</li>
+</ul>
+<h4>Tests <span class="pill api">API</span></h4>
+<ul>
+  <li>Supertest: <code>simulate-analysis</code> bekend id → 200 met transcript+analysis; onbekend → 404.</li>
+  <li><code>analyze-assessment</code> zonder key → <code>simulated:true</code>, namen geremapt naar input.</li>
+  <li>Met gemockte Gemini → <code>simulated:false</code>, analysis-keys = aangeleverde namen; solo levert 1 key.</li>
+  <li>Gemini gooit fout → 500 met <code>error</code>.</li>
+</ul>
+<div class="note"><span class="pill smoke">SMOKE</span> Playwright: simulatieknop in UI draait een volledige client-simulatie en "Gebruik AI Suggesties" vult het formulier.</div>
+<div class="gate"><strong>Gate:</strong> API + smoke + regressie groen.</div>
+<p><span class="pill commit">COMMIT</span> <code>feat(F7): express API + Gemini analysis with graceful fallback</code></p>
+</div>
+
+<!-- F8 -->
+<div class="card phase" id="f8">
+<h3>F8 · Resultatenmatrix (ResultsView)</h3>
+<p><strong>Doel:</strong> overzicht met punten, cijfer, slaag/zak + CSV-export.</p>
+<h4>Subtaken</h4>
+<ul class="checks">
+  <li>Klasselector; per student afleiden: scores, totaal, isFullyEvaluated, hasOnvoldoende, isPass, cijfer.</li>
+  <li>Tabel met gekleurde scorecellen, totaal/x-van-6, cijfer-badge, slaag/zak-vlag, rapportknop.</li>
+  <li>CSV-export (<code>;</code>) + legenda's.</li>
+</ul>
+<h4>Tests <span class="pill unit">COMPONENT</span> <span class="pill int">INTEGRATIE</span></h4>
+<ul>
+  <li>Volledig met één score=1 → "Gezakt" ondanks voldoende cijfer.</li>
+  <li>Onvolledig → cijfer "Deels", status "Onvolledig".</li>
+  <li>CSV-rijen bevatten naam, 6 scores, totaal, cijfer, statuslabel.</li>
+  <li>Integratie: scoren in F5 → correcte rij verschijnt hier.</li>
+</ul>
+<div class="note"><span class="pill reg">REGRESSIE</span> volledige suite — F5→F8-keten is nu de hoofd-dataroute.</div>
+<div class="gate"><strong>Gate:</strong> tests + regressie groen.</div>
+<p><span class="pill commit">COMMIT</span> <code>feat(F8): results matrix, grading &amp; CSV export</code></p>
+</div>
+
+<!-- F9 -->
+<div class="card phase" id="f9">
+<h3>F9 · Feedbackrapport (FeedbackView)</h3>
+<p><strong>Doel:</strong> printbaar A4-rapport per student.</p>
+<h4>Subtaken</h4>
+<ul class="checks">
+  <li>Studentselector + printknop; parse notities in ✓-tags vs vrije tekst per criterium.</li>
+  <li>Samenvatting (totaal/24, cijfer, geslaagd/gezakt); criterium-kaarten met niveau-badge; sterke punten/ontwikkelpunten met fallbacks.</li>
+  <li>Print-CSS: <code>.no-print</code> verbergen, kleuren forceren.</li>
+</ul>
+<h4>Tests <span class="pill unit">COMPONENT</span></h4>
+<ul>
+  <li>Parser splitst <code>"✓ tag"</code>-regels van vrije tekst correct.</li>
+  <li>Niveau-badge en geslaagd/gezakt-blok tonen juiste status; <code>window.print</code> wordt aangeroepen (mock).</li>
+  <li>Geslaagd vs gezakt-rapport rendert juiste labels/kleuren.</li>
+</ul>
+<div class="gate"><strong>Gate:</strong> component-tests + regressie groen.</div>
+<p><span class="pill commit">COMMIT</span> <code>feat(F9): printable per-student feedback report</code></p>
+</div>
+
+<!-- F10 -->
+<div class="card phase" id="f10">
+<h3>F10 · Databeheer (DataManager)</h3>
+<p><strong>Doel:</strong> CSV-import, JSON back-up/herstel, voorbeelddata, volledige reset.</p>
+<h4>Subtaken</h4>
+<ul class="checks">
+  <li>CSV-import → <code>parseCSV</code> → <code>onImportData</code> (reset assessments) + foutbanner bij ongeldig.</li>
+  <li>JSON back-up maken (4 stukken) + herstellen met key-validatie.</li>
+  <li>Voorbeeldset laden; volledige reset met dubbele bevestiging.</li>
+</ul>
+<h4>Tests <span class="pill unit">COMPONENT</span> <span class="pill int">INTEGRATIE</span></h4>
+<ul>
+  <li>Geldige CSV → <code>onImportData</code> met geparste entiteiten; ongeldige → foutbanner, geen import.</li>
+  <li>Back-up maken bevat alle 4 keys; herstel zonder een key → fout.</li>
+  <li>Integratie: import → kalender/resultaten tonen nieuw cohort; reset → app leeg.</li>
+</ul>
+<div class="gate"><strong>Gate:</strong> tests + regressie groen.</div>
+<p><span class="pill commit">COMMIT</span> <code>feat(F10): CSV import, JSON backup/restore &amp; reset</code></p>
+</div>
+
+<!-- F11 -->
+<div class="card phase" id="f11">
+<h3>F11 · Hardening, E2E &amp; release</h3>
+<p><strong>Doel:</strong> volledige gebruikersreizen end-to-end, productie-build en draaiende start.</p>
+<h4>Subtaken</h4>
+<ul class="checks">
+  <li>A11y/responsive check; foutstaten &amp; lege staten; consistente NL-teksten.</li>
+  <li><code>npm run build</code> → <code>dist/</code> + <code>dist/server.cjs</code>; <code>NODE_ENV=production npm start</code> serveert correct.</li>
+  <li>CI-workflow: install → lint → unit/api/integratie → build → e2e.</li>
+</ul>
+<h4>Tests — volledige piramide</h4>
+<ul>
+  <li><span class="pill e2e">E2E</span> Reis 1: voorbeelddata laden → team openen → alle criteria scoren → Voltooid → Resultaten tonen cijfer → rapport printen (print-dialog gemockt/afgevangen).</li>
+  <li><span class="pill e2e">E2E</span> Reis 2: nieuwe groep + bulk-teams + student → inroosteren via drag-drop → assessment.</li>
+  <li><span class="pill e2e">E2E</span> Reis 3: AI-simulatie "onvoldoende" toepassen → student "Gezakt" in matrix.</li>
+  <li><span class="pill e2e">E2E</span> Reis 4: CSV-import → JSON back-up → reset → herstel.</li>
+  <li><span class="pill smoke">SMOKE</span> productie-build smoke tegen <code>npm start</code>.</li>
+  <li><span class="pill reg">REGRESSIE</span> volledige <code>vitest run --coverage</code> + <code>playwright test</code>.</li>
+</ul>
+<div class="gate"><strong>Gate:</strong> hele piramide groen; build+start werken; coverage-drempel gehaald.</div>
+<p><span class="pill commit">COMMIT</span> <code>chore(F11): e2e suite, CI &amp; production build</code> — <em>push/merge na akkoord gebruiker.</em></p>
+</div>
+
+<hr>
+<p class="small">Einde blauwdruk. Bouw fase voor fase; sla geen test-gate over. De domeinconstanten in A4/A5 zijn normatief —
+neem ze exact over. Diagrammen zijn dubbel opgenomen: kopieer de Mermaid-broncode bij twijfel over de gerenderde versie.</p>
+
+</div>
+
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: "neutral",
+    securityLevel: "loose",
+    flowchart: { curve: "basis" },
+    themeVariables: { fontFamily: "Inter, system-ui, sans-serif" }
+  });
+</script>
+</body>
+</html>
