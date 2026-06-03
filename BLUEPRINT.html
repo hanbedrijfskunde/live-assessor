@@ -72,7 +72,7 @@
 <header class="title">
   <div>
     <span class="tag">BLAUWDRUK</span>
-    <span class="tag">v1.11</span>
+    <span class="tag">v1.12</span>
     <span class="tag">build-ready</span>
     <span class="tag" style="background:#ecfdf5;color:#047857">F0–F11 gerealiseerd — testpiramide compleet</span>
   </div>
@@ -290,6 +290,7 @@ Gemini uitsluitend server-side aanroept. (<code>/api/simulate-analysis</code> be
       ├─ ResultsView.tsx
       ├─ FeedbackView.tsx
       ├─ StudentManager.tsx
+      ├─ AssessorenEditor.tsx     # herbruikbare tag-input voor assessoren (StudentManager + CalendarOverview)
       └─ DataManager.tsx</code></pre>
 
 <!-- DATAMODEL -->
@@ -499,6 +500,7 @@ wordt op verzoek uit <code>public/demo.csv</code> geladen via "Laad Voorbeeldset
   <li>Teamkaart toont teamnummer, statusbadge (Onbeoordeeld/Deels/Voltooid met kleur) en studentnamen. Klik → open assessment.</li>
   <li>Drag-&amp;-drop: sleep een teamkaart naar een ander slot <em>binnen dezelfde groep</em>; bezet slot ⇒ wissel slottijden (<code>onMoveTeam</code>).</li>
   <li>Klik op leeg slot ⇒ pauze toevoegen; klik op ✕ in pauze ⇒ verwijderen (<code>onModifyPauze</code>). Pauze toevoegen op bezet slot zet dat team op <code>slotTime=null</code>.</li>
+  <li>Groepskop toont assessoren als klikbare badge (aria-label "Bewerk assessoren"); klik opent <code>AssessorenEditor</code> inline (placeholder "Docent toevoegen") met een "Klaar"-knop. Wijzigingen lopen via <code>onUpdateGroep(groepId, {assessoren})</code> (= <code>handleUpdateGroep</code> in App).</li>
 </ul>
 
 <h3>AssessmentView (scoren)</h3>
@@ -540,6 +542,7 @@ wordt op verzoek uit <code>public/demo.csv</code> geladen via "Laad Voorbeeldset
 <ul>
   <li>3 formulieren: groep aanmaken (naam/assessoren/datum/slottijd/duur, default pauze 12:00); teams in bulk (verdeelt over sloten, slaat 12:00 over); student toevoegen (groep→team).</li>
   <li>Overzicht per groep met teams + studenten; verwijderacties (groep cascade-verwijdert teams/studenten/assessments).</li>
+  <li>Per groepkaart een <code>AssessorenEditor</code> om assessoren van een bestaande groep te bewerken; wijzigingen via <code>onUpdateGroep(groepId, {assessoren})</code> (= <code>handleUpdateGroep</code> in App).</li>
 </ul>
 
 <h3>DataManager</h3>
@@ -644,6 +647,7 @@ herstarten. Er is geen UI-veld voor de sleutel; hij hoort uitsluitend server-sid
   <li>Eén named export mocken zonder de rest te verliezen: <code>vi.mock(pad, async (importOriginal) =&gt; ({ ...await importOriginal(), naam: vi.fn() }))</code> — bv. <code>downloadCSV</code> mocken om het <code>rows</code>-argument te inspecteren.</li>
   <li>Browser-API's die jsdom niet implementeert (bv. <code>window.print</code>): stub met <code>vi.stubGlobal("print", vi.fn())</code> en assert de aanroep.</li>
   <li>Playwright <code>getByText</code> is case-insensitive substring: gebruik <code>{ exact: true }</code> wanneer hetzelfde woord ook in omringende uitleg-tekst staat (bv. "Gezakt" vs. de legenda).</li>
+  <li>Bij de laatste taak van een meertaks-feature het hele feature-oppervlak in de blueprint nalopen, niet enkel de eigen wijziging — tussentijdse taken kunnen een blueprint-gat achterlaten.</li>
 </ul></div>
 
 <!-- GITFLOW -->

@@ -73,6 +73,11 @@ export default function App() {
     updateAndSaveGroepen(updated);
   };
 
+  const handleUpdateGroep = (groepId: string, patch: Partial<Groep>) => {
+    const updated = groepen.map(g => (g.id === groepId ? { ...g, ...patch } : g));
+    updateAndSaveGroepen(updated);
+  };
+
   const handleDeleteGroep = (groepId: string) => {
     // Cascade-deletion according to PRD: deleting group wipes associated teams and students too
     const nextG = groepen.filter(g => g.id !== groepId);
@@ -342,6 +347,7 @@ export default function App() {
             onModifyPauze={handleModifyPauze}
             onMoveTeam={handleMoveTeam}
             onNavigateToStudents={() => setActiveView("students")}
+            onUpdateGroep={handleUpdateGroep}
           />
         )}
 
@@ -395,6 +401,7 @@ export default function App() {
             onDeleteTeam={handleDeleteTeam}
             onAddStudent={handleAddStudent}
             onDeleteStudent={handleDeleteStudent}
+            onUpdateGroep={handleUpdateGroep}
           />
         )}
 

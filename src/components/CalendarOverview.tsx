@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Groep, Team, Student, TeamAssessment } from "../types";
 import { formatDutchDate, generateTimeSlots, timeToMinutes } from "../utils";
 import { Plus, X, Calendar, ClipboardCheck, Users, CalendarDays } from "lucide-react";
+import AssessorenEditor from "./AssessorenEditor";
 
 interface CalendarOverviewProps {
   groepen: Groep[];
@@ -12,6 +13,7 @@ interface CalendarOverviewProps {
   onModifyPauze: (groepId: string, slotTime: string, action: "add" | "remove") => void;
   onMoveTeam: (teamId: string, newSlotTime: string | null) => void;
   onNavigateToStudents: () => void;
+  onUpdateGroep: (groepId: string, patch: Partial<Groep>) => void;
 }
 
 export default function CalendarOverview({
@@ -22,9 +24,11 @@ export default function CalendarOverview({
   onSelectTeam,
   onModifyPauze,
   onMoveTeam,
-  onNavigateToStudents
+  onNavigateToStudents,
+  onUpdateGroep
 }: CalendarOverviewProps) {
   const [draggedTeamId, setDraggedTeamId] = useState<string | null>(null);
+  const [editingGroepId, setEditingGroepId] = useState<string | null>(null);
 
   // Drag & drop handlers
   const handleDragStart = (e: React.DragEvent, teamId: string) => {
@@ -136,9 +140,32 @@ export default function CalendarOverview({
                   <p className="text-[10px] font-mono text-slate-400 mt-1 uppercase tracking-wider">{formatDutchDate(groep.datum)} | {groep.startTime} - {groep.endTime}</p>
                 </div>
                 <div className="text-left sm:text-right">
-                  <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-xl border border-indigo-100 uppercase tracking-wider">
-                    Assessoren: {groep.assessoren.join(" & ")}
-                  </span>
+                  {editingGroepId === groep.id ? (
+                    <div className="flex items-center gap-2 justify-start sm:justify-end">
+                      <AssessorenEditor
+                        assessoren={groep.assessoren ?? []}
+                        onChange={(next) => onUpdateGroep(groep.id, { assessoren: next })}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setEditingGroepId(null)}
+                        aria-label={`Klaar met assessoren bewerken voor ${groep.name}`}
+                        className="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 focus-visible:ring-2 focus-visible:ring-indigo-200 rounded uppercase tracking-wider"
+                      >
+                        Klaar
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setEditingGroepId(groep.id)}
+                      aria-label={`Bewerk assessoren voor ${groep.name}`}
+                      title={`Klik om assessoren te bewerken voor ${groep.name}`}
+                      className="text-[10px] font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-xl border border-indigo-100 uppercase tracking-wider cursor-pointer"
+                    >
+                      Assessoren: {(groep.assessoren ?? []).length > 0 ? groep.assessoren.join(" & ") : "—"}
+                    </button>
+                  )}
                 </div>
               </div>
 

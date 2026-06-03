@@ -18,6 +18,30 @@ Dit bestand is het tegenhanger-artefact van `BLUEPRINT.html`:
 
 ---
 
+## v1.12 — 2026-06-03 · Assessoren bewerken bij bestaande groepen
+
+### Verbeteringen
+
+- Nieuwe herbruikbare component `AssessorenEditor` (chips met add/remove, placeholder
+  "Docent toevoegen", case-insensitieve dedup) zodat assessoren overal op dezelfde manier
+  bewerkt worden.
+- `App.handleUpdateGroep(groepId, patch)` als centrale mutatie voor groep-patches; gewired naar
+  zowel `StudentManager` (per groepkaart) als `CalendarOverview` (kalenderheader).
+- In `CalendarOverview` is de voorheen read-only assessoren-badge nu een klikbare knop
+  (aria-label "Bewerk assessoren") die de editor inline opent met een "Klaar"-knop. Dit laat een
+  assessor het rooster én de assessoren-toewijzing op één plek beheren zonder naar Studentenbeheer
+  te schakelen. De badge valt terug op `—` wanneer er nog geen assessoren zijn en gebruikt een
+  `?? []`-guard tegen legacy-data zonder `assessoren`-veld.
+
+### Lessen
+
+- De blueprint liep achter op de eerder toegevoegde `AssessorenEditor` + `StudentManager`-wiring:
+  de component ontbrak in de bestandsboom en de feature stond nergens beschreven. Een feature die
+  over meerdere taken wordt gebouwd kan tussentijds een blueprint-gat achterlaten; bij de
+  afrondende taak hoort dus een controle op het hele feature-oppervlak, niet alleen de laatste diff.
+  → Geleerde conventie: bij de laatste taak van een meertaks-feature het hele feature-oppervlak in
+  de blueprint nalopen, niet enkel de eigen wijziging.
+
 ## v1.11 — 2026-06-03 · F11 (E2E & release) — alle fasen gerealiseerd
 
 De laatste fase sluit de testpiramide: van unit tot end-to-end, plus CI en een geverifieerde
