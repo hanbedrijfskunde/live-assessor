@@ -148,7 +148,7 @@ browser (`localStorage`); import/export verloopt via CSV en JSON.</p>
   <tr><td>Prod-bundle</td><td>esbuild</td><td>^0.25.0</td><td>server → `dist/server.cjs`</td></tr>
 </table>
 
-<h4>Te bouwen <code>package.json</code> scripts</h4>
+<h4><code>package.json</code> scripts <span class="pill" style="background:#ecfdf5;color:#047857">✅ AANWEZIG (F0)</span></h4>
 <pre><code>{
   "type": "module",
   "scripts": {
@@ -165,18 +165,21 @@ browser (`localStorage`); import/export verloopt via CSV en JSON.</p>
   }
 }</code></pre>
 
-<h4>Toe te voegen test-dependencies (niet in originele app aanwezig)</h4>
+<h4>Test-dependencies <span class="pill" style="background:#ecfdf5;color:#047857">✅ TOEGEVOEGD IN F0</span></h4>
+<p class="small">Deze stonden niet in de originele app en zijn in F0 als dev-dependencies geïnstalleerd.</p>
 <table>
 <tr><th>Pakket</th><th>Rol</th></tr>
 <tr><td><code>vitest</code>, <code>@vitest/coverage-v8</code></td><td>unit / component / integratie runner + coverage</td></tr>
 <tr><td><code>@testing-library/react</code>, <code>@testing-library/user-event</code>, <code>@testing-library/jest-dom</code></td><td>component-tests</td></tr>
 <tr><td><code>jsdom</code></td><td>DOM voor Vitest</td></tr>
-<tr><td><code>supertest</code></td><td>API-tests tegen Express</td></tr>
+<tr><td><code>supertest</code>, <code>@types/supertest</code></td><td>API-tests tegen Express</td></tr>
 <tr><td><code>@playwright/test</code></td><td>E2E + smoke</td></tr>
 </table>
-<div class="note"><strong>Belangrijk voor testbaarheid:</strong> splits <code>server.ts</code> in <code>app.ts</code>
-(exporteert de Express <code>app</code> zonder <code>listen</code>) en <code>server.ts</code> (importeert app + <code>listen</code>).
-Supertest test dan <code>app</code> direct. Maak de Gemini-client injecteerbaar zodat hij in tests gemockt kan worden.</div>
+<div class="note"><strong>Testbaarheid (gerealiseerd in F0):</strong> <code>server.ts</code> is gesplitst in
+<code>app.ts</code> (exporteert de Express <code>app</code> zonder <code>listen</code>) en <code>server.ts</code>
+(importeert <code>app</code> + Vite/static-wiring + <code>listen</code>). Supertest test <code>app</code> direct.
+De Gemini-client is injecteerbaar via <code>setGeminiClientForTesting</code> / <code>resetGeminiClientForTesting</code>,
+zodat hij in tests gemockt of op <code>null</code> (fallback-pad) gezet kan worden.</div>
 
 <!-- ARCHITECTUUR -->
 <h2 id="architectuur">A3 · Architectuur</h2>
