@@ -18,6 +18,31 @@ Dit bestand is het tegenhanger-artefact van `BLUEPRINT.html`:
 
 ---
 
+## v1.2 — 2026-06-03 · F5 (scoringskern) onder test
+
+De kern van de applicatie — het beoordelingsformulier — onder test gebracht, met de eerste
+end-to-end-deelreis als bewijs dat de hele keten (scoren → status → kalender) klopt.
+
+### Verbeteringen
+
+- **F5 — AssessmentView:** componenttests voor het beoordelingshart: score zetten → status
+  `partial`, alle 6 criteria → `completed`, een score wissen → terug naar `partial`,
+  duo-score-replicatie met read-only gesynchroniseerde medestudent, observatie-tag toggle
+  (`✓ tag`-regel toevoegen/verwijderen) en per-student reset (incl. uitgeschakeld bij lege student).
+- **Eerste E2E-deelreis** (`e2e/assessment.spec.ts`): open het solo-team, scoor alle zes criteria
+  en controleer dat de kalenderkaart op "Voltooid" springt — de eerste test die de volledige
+  gebruikersketen door de echte app heen aflegt.
+
+### Lessen
+
+- Niveau-labels als "Op"/"Boven" bestaan in het scherm twee keer: als kop van een tag-groep
+  (`<span>`) én als scoreknop (`<button>`); een `getByText` is dan dubbelzinnig. In een duo
+  renderen bovendien beide studenten identieke knoppen.
+  → Geleerde conventie: query controls met `getByRole("button", …)`, en bij identieke controls over
+  meerdere kaarten met `getAllByRole(...)` + positie-index.
+
+---
+
 ## v1.1 — 2026-06-03 · F0–F4 gerealiseerd (baseline)
 
 Eerste vastgelegde versie. De app bestond al; vanaf hier wordt ze fase voor fase onder test

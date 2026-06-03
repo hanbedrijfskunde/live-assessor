@@ -72,9 +72,9 @@
 <header class="title">
   <div>
     <span class="tag">BLAUWDRUK</span>
-    <span class="tag">v1.1</span>
+    <span class="tag">v1.2</span>
     <span class="tag">build-ready</span>
-    <span class="tag" style="background:#ecfdf5;color:#047857">F0–F4 gerealiseerd</span>
+    <span class="tag" style="background:#ecfdf5;color:#047857">F0–F5 gerealiseerd</span>
   </div>
   <h1>PROMEF Assessment Tool &amp; AI Notulist</h1>
   <p><strong>Doel van dit document:</strong> een complete, op zichzelf staande bouwspecificatie. Een software engineer
@@ -621,6 +621,7 @@ naar <code>student1Name/student2Name</code>). Mét sleutel → Gemini <code>gene
   <li>Gemini-client is injecteerbaar (<code>setGeminiClientForTesting</code> / <code>resetGeminiClientForTesting</code>) zodat API-tests zonder netwerk draaien en het fallback-pad geforceerd kan worden.</li>
   <li><code>localStorage</code> in tests: in-memory <code>Storage</code>-stub i.p.v. jsdom; voor <code>App</code>-integratie ook <code>confirm</code>/<code>alert</code> stubben.</li>
   <li>Namen als "BKN-F01" komen in een view vaak meervoudig voor (kaart + <code>&lt;option&gt;</code>s); query op een uniek anker (bv. <code>getAllByTitle("Verwijder groep")</code>-telling) i.p.v. <code>getByText</code>.</li>
+  <li>Een label dat zowel kop (<code>&lt;span&gt;</code>) als knop is (bv. niveau "Op"/"Boven"): query met <code>getByRole("button", …)</code>. Bij identieke controls over meerdere kaarten (duo): <code>getAllByRole(...)</code> + positie-index (kaartvolgorde).</li>
 </ul></div>
 
 <!-- GITFLOW -->
@@ -890,7 +891,8 @@ voor welke fasen/tracks veilig gelijktijdig kunnen en welke gedeelde bestanden j
 
 <!-- F5 -->
 <div class="card phase" id="f5">
-<h3>F5 · Assessment-werkblad (AssessmentView) — kernscoring</h3>
+<h3>F5 · Assessment-werkblad (AssessmentView) — kernscoring <span class="pill" style="background:#ecfdf5;color:#047857">✅ GEREALISEERD</span></h3>
+<p class="small"><strong>Status:</strong> component-tests toegevoegd (<code>tests/component/AssessmentView.test.tsx</code>): score zetten → status partial, alle 6 → completed, score wissen → terug naar partial, duo-score-replicatie + read-only slave, observatie-tag toggle (✓-regel), en per-student reset (incl. disabled-bij-leeg). Plus de eerste E2E-deelreis (<code>e2e/assessment.spec.ts</code>): open team → scoor 6 criteria → kaart wordt "Voltooid". Component bestond al.</p>
 <p><strong>Doel:</strong> het beoordelingshart: niveaus, tags, notities, duo-sync, reset, auto-save + statusberekening.</p>
 <h4>Subtaken</h4>
 <ul class="checks">
