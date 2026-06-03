@@ -22,7 +22,7 @@ export default function AssessorenEditor({ assessoren, onChange }: AssessorenEdi
   };
 
   const removeAssessor = (name: string) => {
-    onChange(assessoren.filter(a => a !== name));
+    onChange(assessoren.filter(a => a.toLowerCase() !== name.toLowerCase()));
   };
 
   return (

@@ -55,4 +55,20 @@ describe("AssessorenEditor", () => {
     await user.click(screen.getByRole("button", { name: "Verwijder Anya" }));
     expect(onChange).toHaveBeenCalledWith(["Bram"]);
   });
+
+  it("clears the input after a successful add", async () => {
+    const user = userEvent.setup();
+    render(<AssessorenEditor assessoren={[]} onChange={vi.fn()} />);
+    const input = screen.getByPlaceholderText("Docent toevoegen");
+    await user.type(input, "Anya{Enter}");
+    expect(input).toHaveValue("");
+  });
+
+  it("clears the input after a rejected duplicate", async () => {
+    const user = userEvent.setup();
+    render(<AssessorenEditor assessoren={["Anya"]} onChange={vi.fn()} />);
+    const input = screen.getByPlaceholderText("Docent toevoegen");
+    await user.type(input, "anya{Enter}");
+    expect(input).toHaveValue("");
+  });
 });
