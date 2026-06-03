@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Groep, Team, Student } from "../types";
 import { generateId, timeToMinutes, minutesToTime } from "../utils";
 import { Plus, Trash2, Users, FolderPlus, UserPlus, HelpCircle } from "lucide-react";
+import AssessorenEditor from "./AssessorenEditor";
 
 interface StudentManagerProps {
   groepen: Groep[];
@@ -13,6 +14,7 @@ interface StudentManagerProps {
   onDeleteTeam: (teamId: string) => void;
   onAddStudent: (student: Student) => void;
   onDeleteStudent: (studentId: string) => void;
+  onUpdateGroep: (groepId: string, patch: Partial<Groep>) => void;
 }
 
 export default function StudentManager({
@@ -24,7 +26,8 @@ export default function StudentManager({
   onAddTeamsBulk,
   onDeleteTeam,
   onAddStudent,
-  onDeleteStudent
+  onDeleteStudent,
+  onUpdateGroep
 }: StudentManagerProps) {
   // Add Group states
   const [newGroup, setNewGroup] = useState({
@@ -331,6 +334,14 @@ export default function StudentManager({
                     >
                       <Trash2 size={16} />
                     </button>
+                  </div>
+
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider shrink-0">Assessoren:</span>
+                    <AssessorenEditor
+                      assessoren={groep.assessoren}
+                      onChange={(next) => onUpdateGroep(groep.id, { assessoren: next })}
+                    />
                   </div>
 
                   {/* Team List with Students */}

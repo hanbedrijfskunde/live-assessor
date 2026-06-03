@@ -26,6 +26,7 @@ function renderManager(over: Partial<ComponentProps<typeof StudentManager>> = {}
     onDeleteTeam: vi.fn(),
     onAddStudent: vi.fn(),
     onDeleteStudent: vi.fn(),
+    onUpdateGroep: vi.fn(),
     ...over,
   };
   render(<StudentManager {...props} />);
@@ -116,5 +117,27 @@ describe("StudentManager — delete group", () => {
     const props = renderManager();
     await user.click(screen.getByTitle("Verwijder groep"));
     expect(props.onDeleteGroep).not.toHaveBeenCalled();
+  });
+});
+
+describe("StudentManager — assessoren bewerken", () => {
+  it("toont bestaande assessoren als chips in de groepkaart", () => {
+    renderManager({ groepen: [{ ...group, assessoren: ["Anya", "Bram"] }] });
+    expect(screen.getByText("Anya")).toBeInTheDocument();
+    expect(screen.getByText("Bram")).toBeInTheDocument();
+  });
+
+  it("voegt een assessor toe via de groepkaart", async () => {
+    const user = userEvent.setup();
+    const props = renderManager({ groepen: [{ ...group, assessoren: ["Anya"] }] });
+    await user.type(screen.getByPlaceholderText("Docent toevoegen"), "Bram{Enter}");
+    expect(props.onUpdateGroep).toHaveBeenCalledWith("g1", { assessoren: ["Anya", "Bram"] });
+  });
+
+  it("verwijdert een assessor via de groepkaart", async () => {
+    const user = userEvent.setup();
+    const props = renderManager({ groepen: [{ ...group, assessoren: ["Anya", "Bram"] }] });
+    await user.click(screen.getByRole("button", { name: "Verwijder Anya" }));
+    expect(props.onUpdateGroep).toHaveBeenCalledWith("g1", { assessoren: ["Bram"] });
   });
 });
