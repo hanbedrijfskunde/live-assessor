@@ -615,6 +615,7 @@ naar <code>student1Name/student2Name</code>). Mét sleutel → Gemini <code>gene
 (3) <code>npm run lint</code> (tsc) schoon · (4) regressie groen · (5) commit gemaakt (push optioneel) ·
 (6) <code>BLUEPRINT.html</code> bijgewerkt naar de actuele staat.</div>
 <div class="note"><strong>Geleerde conventies (gerealiseerd):</strong>
+<span style="display:block;margin:2px 0 6px;font-style:italic">Kale, nog-geldende regels — de gedateerde context en het "waarom" staan per versie in <code>CHANGELOG.md</code>.</span>
 <ul style="margin:6px 0 0">
   <li>API-tests draaien in Node via een per-bestand docblock <code>// @vitest-environment node</code> — Vitest 4 verwijderde <code>environmentMatchGlobs</code>.</li>
   <li>Gemini-client is injecteerbaar (<code>setGeminiClientForTesting</code> / <code>resetGeminiClientForTesting</code>) zodat API-tests zonder netwerk draaien en het fallback-pad geforceerd kan worden.</li>

@@ -24,6 +24,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 > The blueprint is maintained as `BLUEPRINT.html` only (HTML with embedded Mermaid — each diagram
 > appears both rendered and as copyable source). There is no Markdown variant; do not create one.
 
+## 📓 Record history in `CHANGELOG.md` — the blueprint's counterpart
+
+`BLUEPRINT.html` holds the *current state* (no legacy); `CHANGELOG.md` holds the *history*. They are
+two artefacts with opposite jobs — never put a dated wijzigingslog inside the blueprint.
+
+**On every version bump:** add a new entry at the top of `CHANGELOG.md` (newest first) with two
+subsections — **Verbeteringen** (what changed and *why*) and **Lessen** (what was learned and the
+situation that surprised us). Keep the `v…`-tag in the blueprint header equal to the top changelog
+entry.
+
+**Lessons flow one way.** The changelog tells the dated story with context; distil any *still-valid*
+lesson into a bare rule in the *Geleerde conventies* block of `BLUEPRINT.html`. Mark that bridge in
+the changelog with a `→ Geleerde conventie:` line. The blueprint carries the rule (no dates); the
+changelog carries the why. Do not duplicate the full lesson in both places.
+
 ## Commands
 
 ```bash
