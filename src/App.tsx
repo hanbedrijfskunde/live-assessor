@@ -347,6 +347,7 @@ export default function App() {
             onModifyPauze={handleModifyPauze}
             onMoveTeam={handleMoveTeam}
             onNavigateToStudents={() => setActiveView("students")}
+            onUpdateGroep={handleUpdateGroep}
           />
         )}
 

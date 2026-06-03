@@ -25,6 +25,7 @@ function renderCal(over: Partial<ComponentProps<typeof CalendarOverview>> = {}) 
     onModifyPauze: vi.fn(),
     onMoveTeam: vi.fn(),
     onNavigateToStudents: vi.fn(),
+    onUpdateGroep: vi.fn(),
     ...over,
   };
   const utils = render(<CalendarOverview {...props} />);
@@ -102,5 +103,23 @@ describe("CalendarOverview — drag & drop", () => {
     const otherGroupRow = screen.getByText("10:00").parentElement!; // belongs to g2
     fireEvent.drop(otherGroupRow, { dataTransfer: dt("t-1") });
     expect(props.onMoveTeam).not.toHaveBeenCalled();
+  });
+});
+
+describe("CalendarOverview — assessoren bewerken", () => {
+  it("toont assessoren als badge die je kunt openen om te bewerken", async () => {
+    const user = userEvent.setup();
+    renderCal({ groepen: [g({ assessoren: ["Anya"] })] });
+    expect(screen.queryByPlaceholderText("Docent toevoegen")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Bewerk assessoren" }));
+    expect(screen.getByPlaceholderText("Docent toevoegen")).toBeInTheDocument();
+  });
+
+  it("voegt een assessor toe vanuit de kalenderheader", async () => {
+    const user = userEvent.setup();
+    const { props } = renderCal({ groepen: [g({ assessoren: ["Anya"] })] });
+    await user.click(screen.getByRole("button", { name: "Bewerk assessoren" }));
+    await user.type(screen.getByPlaceholderText("Docent toevoegen"), "Bram{Enter}");
+    expect(props.onUpdateGroep).toHaveBeenCalledWith("g1", { assessoren: ["Anya", "Bram"] });
   });
 });
