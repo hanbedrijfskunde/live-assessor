@@ -149,7 +149,8 @@ export default function CalendarOverview({
                       <button
                         type="button"
                         onClick={() => setEditingGroepId(null)}
-                        className="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 uppercase tracking-wider"
+                        aria-label={`Klaar met assessoren bewerken voor ${groep.name}`}
+                        className="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 focus-visible:ring-2 focus-visible:ring-indigo-200 rounded uppercase tracking-wider"
                       >
                         Klaar
                       </button>
@@ -158,8 +159,8 @@ export default function CalendarOverview({
                     <button
                       type="button"
                       onClick={() => setEditingGroepId(groep.id)}
-                      aria-label="Bewerk assessoren"
-                      title="Klik om assessoren te bewerken"
+                      aria-label={`Bewerk assessoren voor ${groep.name}`}
+                      title={`Klik om assessoren te bewerken voor ${groep.name}`}
                       className="text-[10px] font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-xl border border-indigo-100 uppercase tracking-wider cursor-pointer"
                     >
                       Assessoren: {(groep.assessoren ?? []).length > 0 ? groep.assessoren.join(" & ") : "—"}

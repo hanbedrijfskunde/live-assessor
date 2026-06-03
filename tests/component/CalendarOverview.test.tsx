@@ -111,15 +111,25 @@ describe("CalendarOverview — assessoren bewerken", () => {
     const user = userEvent.setup();
     renderCal({ groepen: [g({ assessoren: ["Anya"] })] });
     expect(screen.queryByPlaceholderText("Docent toevoegen")).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Bewerk assessoren" }));
+    await user.click(screen.getByRole("button", { name: /Bewerk assessoren/ }));
     expect(screen.getByPlaceholderText("Docent toevoegen")).toBeInTheDocument();
   });
 
   it("voegt een assessor toe vanuit de kalenderheader", async () => {
     const user = userEvent.setup();
     const { props } = renderCal({ groepen: [g({ assessoren: ["Anya"] })] });
-    await user.click(screen.getByRole("button", { name: "Bewerk assessoren" }));
+    await user.click(screen.getByRole("button", { name: /Bewerk assessoren/ }));
     await user.type(screen.getByPlaceholderText("Docent toevoegen"), "Bram{Enter}");
     expect(props.onUpdateGroep).toHaveBeenCalledWith("g1", { assessoren: ["Anya", "Bram"] });
+  });
+
+  it("sluit de editor weer via Klaar", async () => {
+    const user = userEvent.setup();
+    renderCal({ groepen: [g({ assessoren: ["Anya"] })] });
+    await user.click(screen.getByRole("button", { name: /Bewerk assessoren/ }));
+    expect(screen.getByPlaceholderText("Docent toevoegen")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /Klaar/ }));
+    expect(screen.queryByPlaceholderText("Docent toevoegen")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Bewerk assessoren/ })).toBeInTheDocument();
   });
 });
