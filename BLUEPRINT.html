@@ -74,7 +74,7 @@
     <span class="tag">BLAUWDRUK</span>
     <span class="tag">v1.1</span>
     <span class="tag">build-ready</span>
-    <span class="tag" style="background:#ecfdf5;color:#047857">F0–F2 gerealiseerd</span>
+    <span class="tag" style="background:#ecfdf5;color:#047857">F0–F3 gerealiseerd</span>
   </div>
   <h1>PROMEF Assessment Tool &amp; AI Notulist</h1>
   <p><strong>Doel van dit document:</strong> een complete, op zichzelf staande bouwspecificatie. Een software engineer
@@ -746,7 +746,8 @@ als de gate gehaald is.</p>
 
 <!-- F3 -->
 <div class="card phase" id="f3">
-<h3>F3 · Studentbeheer (StudentManager)</h3>
+<h3>F3 · Studentbeheer (StudentManager) <span class="pill" style="background:#ecfdf5;color:#047857">✅ GEREALISEERD</span></h3>
+<p class="small"><strong>Status:</strong> component-tests toegevoegd (<code>tests/component/StudentManager.test.tsx</code>): genormaliseerde groep-payload (uppercase naam, assessoren-array, defaults), blanco naam blokkeert submit, student-submit disabled tot naam+team gekozen, bulk-teams emit (groupId, count), en verwijder-groep mét/zónder bevestiging. Component bestond al. NB: selects in dit component hebben geen gekoppeld label — query via een optie (<code>getByRole("option", …).closest("select")</code>).</p>
 <p><strong>Doel:</strong> groepen/teams/studenten aanmaken &amp; verwijderen via UI.</p>
 <h4>Subtaken</h4>
 <ul class="checks">
