@@ -72,9 +72,9 @@
 <header class="title">
   <div>
     <span class="tag">BLAUWDRUK</span>
-    <span class="tag">v1.10</span>
+    <span class="tag">v1.11</span>
     <span class="tag">build-ready</span>
-    <span class="tag" style="background:#ecfdf5;color:#047857">F0–F10 gerealiseerd</span>
+    <span class="tag" style="background:#ecfdf5;color:#047857">F0–F11 gerealiseerd — testpiramide compleet</span>
   </div>
   <h1>PROMEF Assessment Tool &amp; AI Notulist</h1>
   <p><strong>Doel van dit document:</strong> een complete, op zichzelf staande bouwspecificatie. Een software engineer
@@ -643,6 +643,7 @@ herstarten. Er is geen UI-veld voor de sleutel; hij hoort uitsluitend server-sid
   <li>Een verborgen file-input (<code>display:none</code>) weigert <code>userEvent.upload</code>: zet <code>files</code> via <code>Object.defineProperty</code> en dispatch <code>fireEvent.change</code>. Mock <code>fetch</code> voor het upload→API-pad.</li>
   <li>Eén named export mocken zonder de rest te verliezen: <code>vi.mock(pad, async (importOriginal) =&gt; ({ ...await importOriginal(), naam: vi.fn() }))</code> — bv. <code>downloadCSV</code> mocken om het <code>rows</code>-argument te inspecteren.</li>
   <li>Browser-API's die jsdom niet implementeert (bv. <code>window.print</code>): stub met <code>vi.stubGlobal("print", vi.fn())</code> en assert de aanroep.</li>
+  <li>Playwright <code>getByText</code> is case-insensitive substring: gebruik <code>{ exact: true }</code> wanneer hetzelfde woord ook in omringende uitleg-tekst staat (bv. "Gezakt" vs. de legenda).</li>
 </ul></div>
 
 <!-- GITFLOW -->
@@ -1051,7 +1052,8 @@ voor welke fasen/tracks veilig gelijktijdig kunnen en welke gedeelde bestanden j
 
 <!-- F11 -->
 <div class="card phase" id="f11">
-<h3>F11 · Hardening, E2E &amp; release</h3>
+<h3>F11 · Hardening, E2E &amp; release <span class="pill" style="background:#ecfdf5;color:#047857">✅ GEREALISEERD</span></h3>
+<p class="small"><strong>Testnotitie:</strong> E2E-reizen (<code>e2e/</code>): scoren → "Voltooid" (<code>assessment.spec.ts</code>); groep + bulk-teams + student → zichtbaar op de kalender; AI-simulatie "Alles onvoldoende" toepassen → student "Gezakt" in de matrix; demo importeren → reset wist de app (<code>journeys.spec.ts</code>). Plus de <code>@smoke</code>-boot. CI-workflow (<code>.github/workflows/ci.yml</code>): install → lint → test → build → e2e. Productie-build geverifieerd (<code>npm run build</code> → <code>dist/server.cjs</code>).</p>
 <p><strong>Doel:</strong> volledige gebruikersreizen end-to-end, productie-build en draaiende start.</p>
 <h4>Subtaken</h4>
 <ul class="checks">

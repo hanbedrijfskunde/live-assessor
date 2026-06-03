@@ -18,6 +18,30 @@ Dit bestand is het tegenhanger-artefact van `BLUEPRINT.html`:
 
 ---
 
+## v1.11 — 2026-06-03 · F11 (E2E & release) — alle fasen gerealiseerd
+
+De laatste fase sluit de testpiramide: van unit tot end-to-end, plus CI en een geverifieerde
+productie-build. Daarmee is het volledige bouwplan (F0–F11) gerealiseerd.
+
+### Verbeteringen
+
+- **E2E-reizen** (`e2e/journeys.spec.ts`): (2) groep + bulk-teams + student aanmaken en op de kalender
+  terugzien; (3) AI-simulatie "Alles onvoldoende" toepassen → student "Gezakt" in de resultatenmatrix
+  (de hele F6→apply→F8-keten door de echte app); (4) demo importeren → reset wist de app. Reis (1)
+  scoren→"Voltooid" bestond al.
+- **CI** (`.github/workflows/ci.yml`): Node 20, `npm ci` → lint → test → build → Playwright e2e.
+- **Productie-build geverifieerd:** `npm run build` levert frontend + `dist/server.cjs`.
+- **Eindstand:** 76 Vitest (unit/component/integration/API) + 5 Playwright (1 smoke + 4 reizen) groen.
+
+### Lessen
+
+- Playwright's `getByText("Gezakt")` is standaard case-insensitive substring en matchte ook de
+  legenda-zin met "gezakt"; dat brak op strict-mode "2 elements".
+  → Geleerde conventie: in e2e exact matchen met `getByText(tekst, { exact: true })` wanneer een woord
+  ook in omringende uitleg-tekst voorkomt.
+
+---
+
 ## v1.10 — 2026-06-03 · F10 (databeheer) onder test
 
 Import/export en reset zijn de in-/uitgangen van de hele dataset; één fout hier kan een heel cohort
