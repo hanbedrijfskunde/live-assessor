@@ -79,8 +79,9 @@
   <h1>PROMEF Assessment Tool &amp; AI Notulist</h1>
   <p><strong>Doel van dit document:</strong> een complete, op zichzelf staande bouwspecificatie. Een software engineer
   moet hiermee de volledige applicatie kunnen bouwen — zonder aanvullende instructies of documentatie.</p>
-  <p class="small">Leeswijze: lees eerst Deel A (wat & hoe). Bouw daarna strikt volgens Deel B (fasen). Elke fase eindigt
-  met een testset en een commit-gate. Diagrammen staan dubbel: als Mermaid-broncode (voor AI) én gerenderd (voor mensen).</p>
+  <p class="small">Leeswijze: lees eerst Deel A (wat & hoe). Bouw daarna volgens Deel B (fasen), met respect voor de
+  afhankelijkheden; onafhankelijke fasen mogen parallel — zie A11. Elke fase eindigt met een testset en een commit-gate.
+  Diagrammen staan dubbel: als Mermaid-broncode (voor AI) én gerenderd (voor mensen).</p>
 </header>
 
 <div class="card">
@@ -736,8 +737,13 @@ en een eigen testset+commit. Laat één integrator de gedeelde oppervlakken (App
 
 <!-- =================== DEEL B =================== -->
 <h2 id="fasen">B · Bouwplan in fasen</h2>
-<p>Bouw strikt op volgorde. Elke fase: <em>Doel → Subtaken → Tests → Test-gate → Commit</em>. Een fase is pas "klaar"
-als de gate gehaald is.</p>
+<p>De nummering F0–F11 is de <strong>standaard- en referentievolgorde</strong> voor één developer. Wat
+<strong>strikt</strong> is, is tweeledig: (1) de <strong>afhankelijkheden</strong> tussen fasen (de pijlen in het
+onderstaande schema en in <a href="#parallel">A11</a>) en (2) binnen elke fase de volgorde
+<em>Doel → Subtaken → Tests → Test-gate → Commit</em> — een fase is pas "klaar" als de gate gehaald is.</p>
+<p>De numerieke <em>volgorde</em> is géén verplichting: fasen zonder onderlinge afhankelijkheid mogen
+<strong>parallel</strong> gebouwd en gedelegeerd worden. Zie <a href="#parallel">A11 · Parallellisatie &amp; delegatie</a>
+voor welke fasen/tracks veilig gelijktijdig kunnen en welke gedeelde bestanden je dan moet serialiseren.</p>
 
 <div class="diagram-label">📋 Mermaid-broncode (voor AI)</div>
 <pre><code>flowchart TD
