@@ -339,7 +339,7 @@ export default function StudentManager({
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider shrink-0">Assessoren:</span>
                     <AssessorenEditor
-                      assessoren={groep.assessoren}
+                      assessoren={groep.assessoren ?? []}
                       onChange={(next) => onUpdateGroep(groep.id, { assessoren: next })}
                     />
                   </div>
