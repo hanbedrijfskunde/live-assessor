@@ -39,6 +39,27 @@ body {
     display: none !important;
   }
 
+  /* Gespreksscript-leidraad: bij een geopende overlay print je alléén de modal-sheet,
+     niet de onderliggende assessment-werkplek. De overlay is een portal-broer van
+     #main-scaffold, dus het verbergen van de scaffold laat enkel de sheet over. */
+  body:has(#gespreksscript-overlay) #main-scaffold {
+    display: none !important;
+  }
+  #gespreksscript-overlay {
+    position: static !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+  #gespreksscript-sheet {
+    box-shadow: none !important;
+    border: none !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
   /* Force elements to stretch nicely */
   #main-scaffold, #core-content-frame, #print-sheet-boundary {
     padding: 0 !important;

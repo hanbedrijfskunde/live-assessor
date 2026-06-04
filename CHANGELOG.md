@@ -18,6 +18,37 @@ Dit bestand is het tegenhanger-artefact van `BLUEPRINT.html`:
 
 ---
 
+## v1.13 — 2026-06-04 · Gespreksscript-leidraad voor assessoren (met PDF)
+
+### Verbeteringen
+
+- Nieuwe **gespreksleidraad** voor assessoren tijdens het mondelinge assessment. Inhoud staat als
+  pure data in `src/gespreksscript.ts` (`GESPREKSSCRIPT`): een opening, per criterium een
+  toelichting + letterlijke **startvraag** + een **vragenbank** (doorvragen), en een afsluiting met
+  timing-suggestie. Bewust gescheiden van de UI zodat de inhoud testbaar is en los aanpasbaar — net
+  als `CRITERIA` in `types.ts`.
+- Nieuwe component `GespreksscriptModal` toont de leidraad als read-only overlay, gekoppeld aan
+  `CRITERIA` voor titel/beschrijving en de **niveau-signalen** uit `tagsByLevel` (zodat de assessor
+  de vraag direct kan koppelen aan een score). Opent via een 📜-knop in de `AssessmentView`-kop.
+- **Op te slaan als PDF** via `window.print()`. De modal wordt via `createPortal` in
+  `document.body` gerenderd (broer van `#main-scaffold`); een print-regel
+  `body:has(#gespreksscript-overlay) #main-scaffold { display:none }` zorgt dat alléén de leidraad
+  print — de onderliggende assessment-werkplek niet. Esc, backdrop-klik en scroll-lock voor de UX.
+- Tests: `tests/unit/gespreksscript.test.ts` (dekking van de 6 criteria + gevulde vragen) en
+  `tests/component/GespreksscriptModal.test.tsx` (render, PDF-print via stub, Esc/sluiten).
+
+### Lessen
+
+- Het bestaande PDF-pad (`FeedbackView`) isoleert de print puur doordat álles behalve de
+  print-sheet `.no-print` is — dat werkt omdat die view verder leeg is. In `AssessmentView` staat
+  juist een volle werkplek, dus dezelfde truc zou de hele werkplek mee printen. De portal +
+  `:has()`-isolatie lost dat op zonder de bestaande print-CSS of de `FeedbackView` te raken. Een
+  portal rendert in jsdom gewoon in `document.body`, dus de RTL-tests bleven ongewijzigd werken.
+
+  → Geleerde conventie: een overlay die los van de pagina als PDF print render je via een
+  body-portal en isoleer je met `body:has(#overlay) #main-scaffold { display:none }`, in plaats van
+  de hele onderliggende view `.no-print` te maken.
+
 ## v1.12 — 2026-06-03 · Assessoren bewerken bij bestaande groepen
 
 ### Verbeteringen

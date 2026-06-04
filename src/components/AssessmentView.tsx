@@ -1,7 +1,8 @@
 import React, { useState, useRef } from "react";
 import { Groep, Team, Student, CRITERIA, LevelType, LEVEL_SCORES, LEVEL_COLORS, LEVEL_BADGES, TeamAssessment, StudentAssessment } from "../types";
-import { ArrowLeft, User, HelpCircle, AlertTriangle, Sparkles, Check, ChevronRight, RotateCcw } from "lucide-react";
+import { ArrowLeft, User, HelpCircle, AlertTriangle, Sparkles, Check, ChevronRight, RotateCcw, ScrollText } from "lucide-react";
 import AiNotulistPanel from "./AiNotulistPanel";
+import GespreksscriptModal from "./GespreksscriptModal";
 
 interface AssessmentViewProps {
   team: Team;
@@ -45,6 +46,7 @@ export default function AssessmentView({
   const [localAssessment, setLocalAssessment] = useState<TeamAssessment>(getDefaultAssessmentState());
   const [activeTab, setActiveTab] = useState<number>(1); // 1 to 6 coordinates to the 6 criteria
   const [activeNotePickerTag, setActiveNotePickerTag] = useState<{ tagText: string, critId: number } | null>(null);
+  const [scriptOpen, setScriptOpen] = useState<boolean>(false); // Gespreksscript-leidraad overlay
 
   // Auto-grow ref
   const textareaRefs = useRef<Record<string, HTMLTextAreaElement | null>>({});
@@ -320,6 +322,16 @@ export default function AssessmentView({
             </h3>
             <p className="text-[10px] font-mono text-slate-400 mt-1 uppercase tracking-wider">Klas: {groep.name} &middot; Assessoren: {groep.assessoren.join(" & ")}</p>
           </div>
+
+          <button
+            onClick={() => setScriptOpen(true)}
+            id="open-gespreksscript-btn"
+            className="inline-flex items-center gap-1.5 px-3 py-2 border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-slate-900 rounded-xl text-[10px] font-extrabold uppercase tracking-wider transition-colors shadow-sm focus:outline-none cursor-pointer"
+            title="Open de gesprekleidraad met vragen per criterium"
+          >
+            <ScrollText size={14} className="text-indigo-600" />
+            <span>Gespreksscript</span>
+          </button>
         </div>
 
         {/* Scoring overview bar */}
@@ -576,6 +588,17 @@ export default function AssessmentView({
         </div>
 
       </div>
+
+      {scriptOpen && (
+        <GespreksscriptModal
+          students={students.map(s => ({ id: s.id, name: s.name }))}
+          klas={groep.name}
+          datum={groep.datum}
+          teamNummer={team.teamNummer}
+          assessoren={groep.assessoren}
+          onClose={() => setScriptOpen(false)}
+        />
+      )}
     </div>
   );
 }

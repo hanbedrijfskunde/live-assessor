@@ -72,7 +72,7 @@
 <header class="title">
   <div>
     <span class="tag">BLAUWDRUK</span>
-    <span class="tag">v1.12</span>
+    <span class="tag">v1.13</span>
     <span class="tag">build-ready</span>
     <span class="tag" style="background:#ecfdf5;color:#047857">F0–F11 gerealiseerd — testpiramide compleet</span>
   </div>
@@ -240,6 +240,7 @@ Gemini uitsluitend server-side aanroept. (<code>/api/simulate-analysis</code> be
   App --> Stu["StudentManager"]
   App --> Dm["DataManager"]
   Asm --> Ai["AiNotulistPanel"]
+  Asm --> Gs["GespreksscriptModal (portal-overlay, PDF)"]
   App -. "utils.ts" .-> U["loadFromLocalStorage / saveToLocalStorage / parseCSV / time helpers"]
   App -. "types.ts" .-> T["interfaces + CRITERIA + getCijferFromScore"]</code></pre>
 <div class="diagram-label">🖼 Gerenderd (voor mensen)</div>
@@ -253,6 +254,7 @@ Gemini uitsluitend server-side aanroept. (<code>/api/simulate-analysis</code> be
   App --> Stu["StudentManager"]
   App --> Dm["DataManager"]
   Asm --> Ai["AiNotulistPanel"]
+  Asm --> Gs["GespreksscriptModal (portal-overlay, PDF)"]
   App -. "utils.ts" .-> U["loadFromLocalStorage / saveToLocalStorage / parseCSV / time helpers"]
   App -. "types.ts" .-> T["interfaces + CRITERIA + getCijferFromScore"]</div>
 
@@ -280,13 +282,15 @@ Gemini uitsluitend server-side aanroept. (<code>/api/simulate-analysis</code> be
 ├─ e2e/                        # Playwright (smoke + e2e-reizen)
 └─ src/
    ├─ main.tsx                 # entry
-   ├─ index.css                # @import tailwindcss; fonts Inter/JetBrains; print-CSS
+   ├─ index.css                # @import tailwindcss; fonts Inter/JetBrains; print-CSS (incl. overlay-isolatie)
    ├─ types.ts                 # domeintypes + CRITERIA + LEVEL_* + getCijferFromScore
    ├─ utils.ts                 # localStorage + CSV-parse + tijd-helpers (geen seed-namen)
+   ├─ gespreksscript.ts        # inhoud assessor-gespreksleidraad (opening, vragen per criterium, afsluiting)
    └─ components/
       ├─ CalendarOverview.tsx
       ├─ AssessmentView.tsx
       ├─ AiNotulistPanel.tsx
+      ├─ GespreksscriptModal.tsx  # gespreksleidraad-overlay (portal naar body) + PDF-print
       ├─ ResultsView.tsx
       ├─ FeedbackView.tsx
       ├─ StudentManager.tsx
@@ -511,6 +515,14 @@ wordt op verzoek uit <code>public/demo.csv</code> geladen via "Laad Voorbeeldset
   <li><strong>Duo-score</strong>: checkbox per criterium synchroniseert score+notitie van student 1 naar de rest; vervolgstudenten worden read-only.</li>
   <li><strong>Per-student reset</strong>: knop (↺) in studentkop wist die student volledig (<code>{scores:{},isDuo:{},notes:{}}</code>) na bevestiging; uitgeschakeld als er niets te wissen is.</li>
   <li>Auto-save bij elke wijziging via <code>onSaveAssessment</code> (herberekent status). Rechterkolom = AiNotulistPanel.</li>
+  <li><strong>Gespreksscript</strong>: knop (📜) in de kop opent <code>GespreksscriptModal</code> — een gespreksleidraad voor assessoren met opening, per criterium een startvraag + vragenbank (doorvragen) + de niveau-signalen uit <code>tagsByLevel</code>, en een afsluiting. Inhoud staat als data in <code>src/gespreksscript.ts</code>. <strong>Op te slaan als PDF</strong> via <code>window.print()</code>; de modal is een portal naar <code>document.body</code> en de print-CSS verbergt <code>#main-scaffold</code> zodat alléén de leidraad print.</li>
+</ul>
+
+<h3>GespreksscriptModal (gespreksleidraad)</h3>
+<ul>
+  <li>Props: <code>students: {id,name}[]</code> + <code>klas/datum/teamNummer/assessoren</code> + <code>onClose</code>.</li>
+  <li>Read-only overlay (<code>createPortal</code> naar <code>document.body</code>) met Esc-sluiten, backdrop-klik-sluiten en scroll-lock. Inhoud komt uit <code>GESPREKSSCRIPT</code> (opening, criteria, afsluiting, timing) gekoppeld aan <code>CRITERIA</code> (titel/beschrijving/<code>tagsByLevel</code>).</li>
+  <li>PDF: knop "Bewaar als PDF / Print" → <code>window.print()</code>; print-isolatie via <code>body:has(#gespreksscript-overlay) #main-scaffold {display:none}</code> + statische overlay.</li>
 </ul>
 
 <h3>AiNotulistPanel (AI co-pilot)</h3>
@@ -646,6 +658,7 @@ herstarten. Er is geen UI-veld voor de sleutel; hij hoort uitsluitend server-sid
   <li>Een verborgen file-input (<code>display:none</code>) weigert <code>userEvent.upload</code>: zet <code>files</code> via <code>Object.defineProperty</code> en dispatch <code>fireEvent.change</code>. Mock <code>fetch</code> voor het upload→API-pad.</li>
   <li>Eén named export mocken zonder de rest te verliezen: <code>vi.mock(pad, async (importOriginal) =&gt; ({ ...await importOriginal(), naam: vi.fn() }))</code> — bv. <code>downloadCSV</code> mocken om het <code>rows</code>-argument te inspecteren.</li>
   <li>Browser-API's die jsdom niet implementeert (bv. <code>window.print</code>): stub met <code>vi.stubGlobal("print", vi.fn())</code> en assert de aanroep.</li>
+  <li>Een overlay die los van de pagina als PDF moet printen: render via <code>createPortal(document.body)</code> (broer van <code>#main-scaffold</code>) en isoleer met <code>@media print { body:has(#overlay) #main-scaffold { display:none } }</code> — i.p.v. de hele onderliggende view <code>.no-print</code> te maken. Componenten via een portal renderen tóch in <code>document.body</code>, dus RTL <code>screen</code>-queries werken ongewijzigd.</li>
   <li>Playwright <code>getByText</code> is case-insensitive substring: gebruik <code>{ exact: true }</code> wanneer hetzelfde woord ook in omringende uitleg-tekst staat (bv. "Gezakt" vs. de legenda).</li>
   <li>Bij de laatste taak van een meertaks-feature het hele feature-oppervlak in de blueprint nalopen, niet enkel de eigen wijziging — tussentijdse taken kunnen een blueprint-gat achterlaten.</li>
 </ul></div>
@@ -926,6 +939,7 @@ voor welke fasen/tracks veilig gelijktijdig kunnen en welke gedeelde bestanden j
   <li>Observatie-tags: klik/sleep → schrijf <code>"✓ tag"</code>-regel; solo direct, duo via picker, duo-criterium direct op allen.</li>
   <li>Duo-score-checkbox: sync score+notitie van student 1 → rest; vervolgstudenten read-only.</li>
   <li>Per-student reset-knop (↺) met bevestiging; disabled als student leeg.</li>
+  <li>Gespreksscript-leidraad (📜): knop opent <code>GespreksscriptModal</code> (inhoud uit <code>gespreksscript.ts</code>) met opening, startvraag + vragenbank en niveau-signalen per criterium; op te slaan als PDF (<code>window.print()</code> + portal-overlay).</li>
 </ul>
 <h4>Tests <span class="pill unit">COMPONENT</span> <span class="pill int">INTEGRATIE</span></h4>
 <ul>
@@ -934,6 +948,7 @@ voor welke fasen/tracks veilig gelijktijdig kunnen en welke gedeelde bestanden j
   <li>Duo-toggle repliceert score van student 1; slave-veld disabled.</li>
   <li>Tag-klik voegt <code>"✓ tag"</code> toe en verwijdert bij herklik.</li>
   <li>Reset wist één student volledig en laat teamgenoot ongemoeid (integratie via App + localStorage).</li>
+  <li>Gespreksscript: <code>tests/unit/gespreksscript.test.ts</code> bewaakt dekking van de 6 criteria + gevulde vragen; <code>tests/component/GespreksscriptModal.test.tsx</code> dekt render van criteria/startvragen, PDF-print (stub) en Esc/sluiten.</li>
 </ul>
 <div class="note"><span class="pill reg">REGRESSIE</span> + eerste <span class="pill e2e">E2E-deelreis</span>: "open team → scoor alle criteria → kaart wordt Voltooid".</div>
 <div class="gate"><strong>Gate:</strong> component+integratie+regressie groen; E2E-deelreis groen.</div>
